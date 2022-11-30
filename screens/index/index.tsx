@@ -1,4 +1,4 @@
-import { Image , ScrollView} from 'react-native';
+import { Image , ScrollView, Linking, TouchableWithoutFeedback} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import styles from './styles'
 
@@ -8,6 +8,10 @@ import getModels from '../../models/index'
 import Icons from '../../constants/Icons';
 import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
+import { openPage, jumpToView , VIEW_TYPE} from '../../bridges/Router'
+import Utils from '../../utils/index'
+
+const { getUrlWithHost , goWebView} = Utils;
 
 const {assetsHost} = getEnv();
 const getFile = (key)=>{
@@ -21,6 +25,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [secondBannerData, setSecondBannerData] = useState([]);
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
+
+  const onSearchClicked = ({} = {})=>{
+    const uri = getUrlWithHost("mall/pages/search/index");
+    myGoWebView({
+      uri
+    })
+  }
+
+  const myGoWebView = (params)=>{
+    goWebView({
+      navigation,
+      ...params
+    })
+  }
 
   async function querySceneConfig({position = ''} = {}){
     try{
@@ -71,7 +89,19 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       const data4 = await queryHotGoods();
 
       setFirstBannerData(data1.records);
-      setOperationData(data2.records);
+
+      let formatData = [];
+
+      //整除8，分成多个数组。
+      data2?.records.map((item, index)=>{
+          const arrIndex = Math.floor((index)/10);
+          if(!formatData[arrIndex]){
+            formatData[arrIndex] = [];
+          }
+          formatData[arrIndex].push(item);
+      })
+
+      setOperationData(formatData);
       setSecondBannerData(data3.records);
       setHotGoods(data4.records);
     }
@@ -91,7 +121,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                 uri: Icons.searchIcon
               }}
             />
-            <Text style={styles.searchText}>输入关键词进行搜索</Text>
+            <TouchableWithoutFeedback onPress={onSearchClicked}>
+              <Text style={styles.searchText}>输入关键词进行搜索</Text>
+            </TouchableWithoutFeedback>
           </View>
 
           {/* Banner */}
@@ -105,33 +137,60 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               firstBannerData.map((item, index)=>{
                 const uri = getFile(item.images);
                 return (
-                  <Image
+                  <TouchableWithoutFeedback 
                     key={index}
-                    style={styles.bannerImage}
-                    source={{uri}}
-                  />
+                    onPress={()=>{
+                      myGoWebView({
+                        uri: item.skipUrl
+                      })
+                    }}
+                  >
+                    <Image
+                      style={styles.bannerImage}
+                      source={{uri}}
+                    />
+                  </TouchableWithoutFeedback>
                 )
               })
             }
           </Carousel>
 
           {/* 导航 */}
-          <View style={styles.operationWrap}>
+          <Carousel 
+            style={styles.operationCarousel} 
+          >
             {
-              operationData.map((item, index)=>{
-                const uri = getFile(item.images);
+              operationData.map((items, index)=>{
                 return (
-                  <View key={index} style={styles.operationItem}>
-                    <Image
-                      style={styles.operationImage}
-                      source={{uri}}
-                    />
-                    <Text>{item.name}</Text>
+                  <View key={index} style={styles.operationWrap}>
+                    {
+                      items.map((item, itemIndex)=>{
+                        const uri = getFile(item.images);
+                        return (
+                          <TouchableWithoutFeedback 
+                            key={itemIndex}
+                            onPress={()=>{
+                              myGoWebView({
+                                uri: item.skipUrl
+                              })
+                            }}
+                          >
+                            <View style={styles.operationItem}>
+                              <Image
+                                style={styles.operationImage}
+                                source={{uri}}
+                              />
+                              <Text>{item.name}</Text>
+                            </View>
+                          </TouchableWithoutFeedback>
+                        )
+                      })
+                    }
                   </View>
                 )
               })
             }
-          </View>
+          </Carousel>
 
           {/* Banner */}
           <Carousel 
@@ -144,11 +203,19 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               secondBannerData.map((item, index)=>{
                 const uri = getFile(item.images);
                 return (
-                  <Image
+                  <TouchableWithoutFeedback 
                     key={index}
-                    style={styles.secondBannerImage}
-                    source={{uri}}
-                  />
+                    onPress={()=>{
+                      myGoWebView({
+                        uri: item.skipUrl
+                      })
+                    }}
+                  >
+                    <Image
+                      style={styles.secondBannerImage}
+                      source={{uri}}
+                    />
+                  </TouchableWithoutFeedback>
                 )
               })
             }
@@ -168,20 +235,30 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               marketPrice = marketPrice / 100;
               sellPrice = sellPrice / 100;
               return (
-                <View key={index} style={styles.hotItem}>
-                  <Image
-                    style={styles.hotItemImg}
-                    source={{uri}}
-                  />
-                  <View style={styles.hotItemWrap}>
-                    <Text style={styles.hotItemName}>{item.goodsName}</Text>
-                    <View style={styles.hotItemMoneyWrap}>
-                      <Text style={styles.hotItemUnit}>￥</Text>
-                      <Text style={styles.hotItemMoney}>{sellPrice}</Text>
-                      <Text style={styles.hotItemMarketMoney}>￥{marketPrice}</Text>
+                <TouchableWithoutFeedback 
+                  key={index}
+                  onPress={()=>{
+                    const uri = getUrlWithHost(`mall/pages/detail/index?id=${item.id}`)
+                    myGoWebView({
+                      uri
+                    })
+                  }}
+                >
+                  <View style={styles.hotItem}>
+                    <Image
+                      style={styles.hotItemImg}
+                      source={{uri}}
+                    />
+                    <View style={styles.hotItemWrap}>
+                      <Text style={styles.hotItemName}>{item.goodsName}</Text>
+                      <View style={styles.hotItemMoneyWrap}>
+                        <Text style={styles.hotItemUnit}>￥</Text>
+                        <Text style={styles.hotItemMoney}>{sellPrice}</Text>
+                        <Text style={styles.hotItemMarketMoney}>￥{marketPrice}</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
+                </TouchableWithoutFeedback>
               )
             })
           }

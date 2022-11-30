@@ -5,10 +5,10 @@ export default function (url, data = {}, {
   return new Promise((rs,rj)=>{
     try{
       const body = JSON.stringify(data);
-      console.log("------REQUEST-------");
-      console.log("url",url);
-      console.log("body",body);
-      console.log("------REQUEST END-------");
+      // console.log("------REQUEST-------");
+      // console.log("url",url);
+      // console.log("body",body);
+      // console.log("------REQUEST END-------");
       
         fetch(url, {
           method,
@@ -27,9 +27,9 @@ export default function (url, data = {}, {
           }
         })
         .then(response=>{
-          console.log("------RESPONSE-------");
-          console.log("response",response);
-          console.log("------RESPONSE END-------");
+          // console.log("------RESPONSE-------");
+          // console.log("response",response);
+          // console.log("------RESPONSE END-------");
 
           if(response.code == 0){
             rs(response.data);
