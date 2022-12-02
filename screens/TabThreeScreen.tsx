@@ -7,7 +7,7 @@ import Utils from '../utils/index'
 import WebView from '../components/WebView/index';
 
 const { getUrlWithHost , goWebView} = Utils;
-const uri = getUrlWithHost("mall/pages/category/index");
+const uri = getUrlWithHost("mall/pages/cart/cart");
 
 export default function TabTwoScreen({ navigation }) {
   return (

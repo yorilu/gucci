@@ -23,7 +23,7 @@ const Utils = {
     // }else{
     //   uri += `?customerId=${customerId}`
     // }
-    console.log("webview uri", uri, params)
+    console.log("goWebView uri", uri, params)
     navigation.push("WebView", {uri, ...params})
   }
 }
