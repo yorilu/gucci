@@ -1,4 +1,4 @@
-import { Image , ScrollView, Linking} from 'react-native';
+import { Image , ScrollView, Linking, RootTagContext} from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles'
 
@@ -13,11 +13,17 @@ import { WebView } from 'react-native-webview';
 
 const {assetsHost, customerId} = getEnv();
 
-export default function WebViewPage({ uri = '' , navigation =null }) {
+export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) {
 
   const webviewHandler = useRef(null);
+  
 
-  console.log("===uri===", uri)
+  if(pageTitle){
+    navigation.setOptions({
+      title: pageTitle
+    })
+  }
+
 
   const onNavigationStateChange = (e)=>{
     console.log("onNavigationStateChange", e);
@@ -28,17 +34,20 @@ export default function WebViewPage({ uri = '' , navigation =null }) {
     const injectJavascriptStr =  `(function() {
         localStorage.setItem("CUSTOMER_ID","${customerId}");
 
-        let message = {
-          type: "switchTab",
-          data: {
-            page: "HOME"
-          }
-        }
+        // let message = {
+        //   type: "navigate",
+        //   data: {
+        //     page: "WebView",
+        //     uri: "http://www.baidu.com",
+        //     pageTitle: "标题"
+        //   }
+        // }
 
-        message = JSON.stringify(message)
+        // message = JSON.stringify(message)
 
-        window.ReactNativeWebView.postMessage(message);
+        // window.ReactNativeWebView.postMessage(message);
     })()`;
+
 
     if(webviewHandler && webviewHandler.current) {
       try{
@@ -55,12 +64,25 @@ export default function WebViewPage({ uri = '' , navigation =null }) {
     try{
       const jsonData = JSON.parse(nativeEvent.data);
 
-      const {type = '', data:{ page }} = jsonData;
+      const {type = '', data} = jsonData;
+
+      const {page, ...rest} = data;
+      /*
+        data = {
+          page: "Home",
+          uri: "ddd",
+          pageTitle: "页面标题"
+        }
+      */
+
+      console.log("===rest===",rest)
       switch(type){
         case 'switchTab':  
         case 'navigate': 
-          page && navigate.navigate(page)
+          page && navigation.navigate(page, rest)
           break
+        case 'goBack':
+          navigation.goBack();
       }
       console.log("Webview onMessage", messageData);
     }catch(e){

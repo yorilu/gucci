@@ -13,11 +13,11 @@ import WebView from '../../components/WebView/index';
 
 const {assetsHost, customerId} = getEnv();
 
-export default function WebViewPage({ navigation, route = {}}) {
-  let uri = route.params.uri;
+export default function WebViewPage({ navigation, route = {}, uri}) {
+  uri = route.params.uri || uri;
   return (
     <View style={styles.container}  style={{ flex: 1, backgroundColor:'#F7F7F7' }}>
-      <WebView uri={uri} navigation={navigation}></WebView>
+      <WebView uri={uri} navigation={navigation} {...route.params}></WebView>
     </View>
   );
 }
