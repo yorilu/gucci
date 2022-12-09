@@ -28,5 +28,5 @@ const CONFIG = {
 }
 
 export default function(){
-  return CONFIG["prev"]
+  return CONFIG["test"]
 }
