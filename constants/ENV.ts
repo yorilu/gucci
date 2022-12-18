@@ -11,7 +11,7 @@ const CONFIG = {
     api: "https://interests-m-test.billbear.vip/api/",
     assetsHost: "http://ka-img-test.billbear.cn/",
     host: "https://interests-m-test.billbear.vip/",
-    customerId: "1579784156951166977"
+    customerId: "1500708711805132802"
   },
   prev: {
     api: "https://interests-m-prev.billbear.vip/api/",

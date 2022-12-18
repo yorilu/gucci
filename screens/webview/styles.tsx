@@ -25,7 +25,7 @@ const Styles = StyleSheet.create({
     color: "#999",
     borderRadius: 50,
     padding: 10,
-    display: "flexbox",
+    display: "flex",
     flexDirection: "row"
   },
   title: {
