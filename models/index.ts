@@ -8,11 +8,7 @@ import $fetch from '../utils/fetch';
 import getEnv from '../constants/ENV'
 import Utils from '../utils/'
 
-const apiUrl = getEnv().api;
-
-const host = {
-  
-}
+const {api:apiUrl, customerId=''} = getEnv();
 
 const Models = {
   querySceneConfig: {
@@ -25,8 +21,6 @@ const Models = {
     api: "newmall-client/client/sceneConfig/queryHotGoods"
   }
 }
-
-const customerId = "1579784156951166977";
 
 export default function(modelName){
   const config = Models[modelName];

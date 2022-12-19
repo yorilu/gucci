@@ -47,7 +47,6 @@ const Styles = StyleSheet.create({
     height: 150
   },
   secondBannerCarousel:{
-    height: 100,
     width: '100%',
     borderRadius: 10,
     marginTop: 12,
@@ -69,8 +68,7 @@ const Styles = StyleSheet.create({
   },
   operationCarousel:{
     marginTop: 20,
-    width : '100%',
-    height: 200
+    width : '100%'
   },
   operationWrap:{
     display: "flex",

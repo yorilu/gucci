@@ -8,7 +8,6 @@ import getModels from '../../models/index'
 import Icons from '../../constants/Icons';
 import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
-import { openPage, jumpToView , VIEW_TYPE} from '../../bridges/Router'
 import Utils from '../../utils/index'
 
 const { getUrlWithHost , goWebView} = Utils;
@@ -88,7 +87,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       const data3 = await querySceneConfig({position: "OPERATION_LOCATION"});
       const data4 = await queryHotGoods();
 
-      setFirstBannerData(data1.records);
+      setFirstBannerData(data1.records || []);
 
       let formatData = [];
 
@@ -101,9 +100,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           formatData[arrIndex].push(item);
       })
 
-      setOperationData(formatData);
-      setSecondBannerData(data3.records);
-      setHotGoods(data4.records);
+      setOperationData(formatData || []);
+      setSecondBannerData(data3.records || []);
+      setHotGoods(data4.records || []);
     }
 
     init(); 
@@ -127,7 +126,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           </View>
 
           {/* Banner */}
-          <Carousel 
+          { firstBannerData && !!firstBannerData.length && <Carousel 
             style={styles.bannerCarousel} 
             autoplay
             infinite
@@ -154,13 +153,14 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               })
             }
           </Carousel>
+          }
 
           {/* 导航 */}
-          <Carousel 
-            style={styles.operationCarousel} 
+          {operationData && !!operationData.length && <Carousel 
+            style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*100}} 
           >
             {
-              operationData.map((items, index)=>{
+            operationData.map((items, index)=>{
                 return (
                   <View key={index} style={styles.operationWrap}>
                     {
@@ -191,9 +191,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               })
             }
           </Carousel>
+          }
 
           {/* Banner */}
-          <Carousel 
+          { secondBannerData && !!secondBannerData.length && <Carousel 
             style={styles.secondBannerCarousel} 
             autoplay
             infinite
@@ -220,6 +221,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               })
             }
           </Carousel>
+          }
         </View>
 
         <View style={styles.blockTitle}>

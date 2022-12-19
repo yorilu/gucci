@@ -9,7 +9,7 @@ const CONFIG = {
   },
   test: {
     api: "https://interests-m-test.billbear.vip/api/",
-    assetsHost: "http://ka-img-test.billbear.cn/",
+    assetsHost: "http://ka-img-dev.billbear.cn/",
     host: "https://interests-m-test.billbear.vip/",
     customerId: "1500708711805132802"
   },
