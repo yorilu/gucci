@@ -34,23 +34,26 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
     const injectJavascriptStr =  `(function() {
         localStorage.setItem("CUSTOMER_ID","${customerId}");
 
-        // let message = {
-        //   type: "navigate",
-        //   data: {
-        //     page: "WebView",
-        //     uri: "http://www.baidu.com",
-        //     pageTitle: "标题"
-        //   }
-        // }
 
-        // message = JSON.stringify(message)
-
-        // window.ReactNativeWebView.postMessage(message);
+        //获取title, 通知webview
+        try{
+          let webViewPageTitle =  document.title;
+          const titleMsg = JSON.stringify({
+            type: 'setTitle',
+            data: {
+              title: webViewPageTitle
+            }
+          });
+          window.ReactNativeWebView.postMessage(titleMsg);
+        }catch(e){
+          console.log("webViewPageTitle error", e);
+        }
     })()`;
 
 
     if(webviewHandler && webviewHandler.current) {
       try{
+        console.log("injectJavascriptStr",injectJavascriptStr)
         webviewHandler.current.injectJavaScript(injectJavascriptStr)
       }catch(e){
         console.log("webview injectJavascriptStr error", e)
@@ -75,14 +78,20 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
         }
       */
 
-      console.log("===rest===",rest)
       switch(type){
         case 'switchTab':  
         case 'navigate': 
           page && navigation.navigate(page, rest)
-          break
+          break;
         case 'goBack':
           navigation.goBack();
+          break;
+        case 'setTitle':
+          const {title} = data;
+          navigation.setOptions({
+            title
+          })
+          break;
       }
       console.log("Webview onMessage", messageData);
     }catch(e){
@@ -92,8 +101,7 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
     
 
     const {type = '' , params = {} } = nativeEvent.data;
-    console.log("====type===",type)
-    debugger;
+    console.log("====message type===",type)
   }
 
   return (

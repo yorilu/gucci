@@ -8,6 +8,7 @@ import WebView from '../components/WebView/index';
 
 const { getUrlWithHost , goWebView} = Utils;
 const uri = getUrlWithHost("mall/pages/category/index");
+console.log("==uri===", uri);
 
 export default function TabTwoScreen({ navigation }) {
   return (
