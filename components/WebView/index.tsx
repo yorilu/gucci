@@ -26,7 +26,7 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
 
 
   const onNavigationStateChange = (e)=>{
-    console.log("onNavigationStateChange", e);
+    //console.log("onNavigationStateChange", e);
   }
 
   const onload = ()=>{
@@ -53,7 +53,6 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
 
     if(webviewHandler && webviewHandler.current) {
       try{
-        console.log("injectJavascriptStr",injectJavascriptStr)
         webviewHandler.current.injectJavaScript(injectJavascriptStr)
       }catch(e){
         console.log("webview injectJavascriptStr error", e)
@@ -93,15 +92,10 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
           })
           break;
       }
-      console.log("Webview onMessage", messageData);
+      console.log("Webview onMessage", jsonData);
     }catch(e){
       console.log("onMessage error", e);
     }
-
-    
-
-    const {type = '' , params = {} } = nativeEvent.data;
-    console.log("====message type===",type)
   }
 
   return (

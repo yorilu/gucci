@@ -48,6 +48,7 @@ const Styles = StyleSheet.create({
   },
   secondBannerCarousel:{
     width: '100%',
+    height: 110,
     borderRadius: 10,
     marginTop: 12,
     backgroundColor: "#FFF"
