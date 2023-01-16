@@ -90,7 +90,7 @@ function BottomTabNavigator() {
           // ),
         })}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Cata"
         component={TabTwoScreen}
         options={{
@@ -105,7 +105,7 @@ function BottomTabNavigator() {
           title: '购物车',
           tabBarIcon: ({ color }) => <AntDesign name="shoppingcart" color={color} size={26}/>,
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Mine"
         component={TabFourScreen}

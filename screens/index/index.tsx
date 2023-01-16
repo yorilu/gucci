@@ -130,6 +130,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             style={styles.bannerCarousel} 
             autoplay
             infinite
+            dots={false}
             autoplayInterval = { 5000 }
           >
             {
@@ -155,9 +156,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           </Carousel>
           }
 
-          {/* 导航 */}
+          {/* 导航-金刚位 */}
           {operationData && !!operationData.length && <Carousel 
-            style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*100}} 
+            dots={false}
+            style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*140}} 
           >
             {
             operationData.map((items, index)=>{
@@ -198,6 +200,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             style={styles.secondBannerCarousel} 
             autoplay
             infinite
+            dots={false}
             autoplayInterval = { 5000 }
           >
             {

@@ -24,7 +24,6 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
     })
   }
 
-
   const onNavigationStateChange = (e)=>{
     //console.log("onNavigationStateChange", e);
   }
@@ -33,7 +32,6 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
 
     const injectJavascriptStr =  `(function() {
         localStorage.setItem("CUSTOMER_ID","${customerId}");
-
 
         //获取title, 通知webview
         try{
