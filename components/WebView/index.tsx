@@ -14,19 +14,14 @@ import { WebView } from 'react-native-webview';
 
 const {assetsHost, customerId} = getEnv();
 
-export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) {
+export default function WebViewPage({ uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange = ()=>{}}) {
 
   const webviewHandler = useRef(null);
   
-
   if(pageTitle){
     navigation.setOptions({
       title: pageTitle
     })
-  }
-
-  const onNavigationStateChange = (e)=>{
-    //console.log("onNavigationStateChange", e);
   }
 
   //插入token.
@@ -73,6 +68,8 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
         console.log("webview injectJavascriptStr error", e)
       }
     } 
+
+    getHanler && getHanler(webviewHandler.current);
   }
 
   const onMessage = async (e)=>{
