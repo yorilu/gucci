@@ -8,14 +8,14 @@ import getModels from '../../models/index'
 import Icons from '../../constants/Icons';
 import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
-import Utils from '../../utils/index'
+import Utils from '../../utils/index';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { getUrlWithHost , goWebView} = Utils;
 
 const {assetsHost} = getEnv();
 const getFile = (key)=>{
-  const url = assetsHost + key;
-  return url
+  return assetsHost + key;
 }
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
@@ -24,6 +24,39 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [secondBannerData, setSecondBannerData] = useState([]);
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
+
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      init();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const init = async ()=>{
+    const data1 = await querySceneConfig({position: "BANNER"});
+    const data2 = await queryLocation({position: "OPERATION_LOCATION"});
+    const data3 = await querySceneConfig({position: "OPERATION_LOCATION"});
+    const data4 = await queryHotGoods();
+
+    setFirstBannerData(data1.records || []);
+
+    let formatData = [];
+
+    //整除8，分成多个数组。
+    data2?.records.map((item, index)=>{
+        const arrIndex = Math.floor((index)/10);
+        if(!formatData[arrIndex]){
+          formatData[arrIndex] = [];
+        }
+        formatData[arrIndex].push(item);
+    })
+
+    setOperationData(formatData || []);
+    setSecondBannerData(data3.records || []);
+    setHotGoods(data4.records || []);
+  }
 
   const onSearchClicked = ({} = {})=>{
     const uri = getUrlWithHost("mall/pages/search/index");
@@ -78,35 +111,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       console.log(e)
     }
   }
-
-
-  useEffect(()=>{
-    async function init(){
-      const data1 = await querySceneConfig({position: "BANNER"});
-      const data2 = await queryLocation({position: "OPERATION_LOCATION"});
-      const data3 = await querySceneConfig({position: "OPERATION_LOCATION"});
-      const data4 = await queryHotGoods();
-
-      setFirstBannerData(data1.records || []);
-
-      let formatData = [];
-
-      //整除8，分成多个数组。
-      data2?.records.map((item, index)=>{
-          const arrIndex = Math.floor((index)/10);
-          if(!formatData[arrIndex]){
-            formatData[arrIndex] = [];
-          }
-          formatData[arrIndex].push(item);
-      })
-
-      setOperationData(formatData || []);
-      setSecondBannerData(data3.records || []);
-      setHotGoods(data4.records || []);
-    }
-
-    init(); 
-  }, [])
 
   return (
     <ScrollView>

@@ -25,6 +25,7 @@ const Models = {
 export default function(modelName){
   const config = Models[modelName];
   const url = apiUrl + config.api + "/?_t=" + Date.now();
+  console.log("===api send===", url);
   return {
     send:(body = {}, options = {})=>{
       return $fetch(url, {

@@ -44,7 +44,8 @@ const Styles = StyleSheet.create({
   },
   bannerImage:{
     width: '100%',
-    height: 150
+    height: 150,
+    borderRadius: 10
   },
   secondBannerCarousel:{
     width: '100%',
@@ -55,7 +56,8 @@ const Styles = StyleSheet.create({
   },
   secondBannerImage:{
     width: '100%',
-    height: 110
+    height: 110,
+    borderRadius: 10
   },
   operationImage:{
     width: 50,
