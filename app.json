@@ -27,6 +27,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions":["ACCESS_FINE_LOCATION"],
       "package": "io.gucci.client"
     },
     "web": {

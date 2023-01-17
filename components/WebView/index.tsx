@@ -8,6 +8,7 @@ import getModels from '../../models/index'
 import Icons from '../../constants/Icons';
 import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
+import * as Location from 'expo-location';
 
 import { WebView } from 'react-native-webview';
 
@@ -28,14 +29,16 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
     //console.log("onNavigationStateChange", e);
   }
 
+  //插入token.
+  const injectedJavaScriptBeforeContentLoaded = `(function() {
+      localStorage.setItem("CUSTOMER_ID","${customerId}");
+    })
+  `
   const onload = ()=>{
-
     const injectJavascriptStr =  `(function() {
-        localStorage.setItem("CUSTOMER_ID","${customerId}");
-
         //获取title, 通知webview
         try{
-          let webViewPageTitle =  document.title;
+          let webViewPageTitle =  document.title || '';
           const titleMsg = JSON.stringify({
             type: 'setTitle',
             data: {
@@ -46,6 +49,20 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
         }catch(e){
           console.log("webViewPageTitle error", e);
         }
+
+        // //测试定位
+        // try{
+        //   // window.ReactNativeWebView.onMessage(data=>{
+        //   //   console.log(data);
+        //   // })
+        //   const locationMsg = JSON.stringify({
+        //     type: 'getLocation'
+        //   });
+        //   window.ReactNativeWebView.postMessage(locationMsg);
+        // }catch(e){
+        //   console.log("locationMsg error", e);
+        // }
+
     })()`;
 
 
@@ -58,41 +75,68 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
     } 
   }
 
-  const onMessage = (e)=>{
+  const onMessage = async (e)=>{
     const { nativeEvent } = e;
 
     try{
       const jsonData = JSON.parse(nativeEvent.data);
+      console.log("Webview onMessage", jsonData);
 
-      const {type = '', data} = jsonData;
-
-      const {page, ...rest} = data;
-      /*
-        data = {
-          page: "Home",
-          uri: "ddd",
-          pageTitle: "页面标题"
-        }
-      */
+      const {type = '', data = {}} = jsonData;
 
       switch(type){
         case 'switchTab':  
         case 'navigate': 
+          const {page, ...rest} = data;
           page && navigation.navigate(page, rest)
           break;
         case 'goBack':
           navigation.goBack();
           break;
         case 'setTitle':
-          const {title} = data;
+          const {title = ''} = data;
           navigation.setOptions({
             title
           })
           break;
+        case 'getLocation':
+          const locationData = await getLocation();
+          // const message = JSON.stringify({
+          //   data: locationData
+          // });
+          // webviewHandler.postMessage(message);
+          break;
       }
-      console.log("Webview onMessage", jsonData);
+      
     }catch(e){
       console.log("onMessage error", e);
+    }
+  }
+
+  const getLocation = async ()=>{
+    let success = true, data = null;
+
+    try{
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        success = false,
+        data = "Permission to access location was denied";
+      }else{
+        data = await Location.getCurrentPositionAsync({});
+        debugger;
+      }
+    }catch(e){
+      console.log("getLocation error", e);
+    }
+
+    console.log("===getLocation====",{
+      success,
+      data
+    })
+
+    return {
+      success,
+      data
     }
   }
 
@@ -104,12 +148,13 @@ export default function WebViewPage({ uri = '' , navigation =null , pageTitle}) 
         originWhitelist = {["*"]}
         applicationNameForUserAgent={'GucciApp/1.0.0'}
         onNavigationStateChange={onNavigationStateChange}
+        injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onLoadStart={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
           const { url } = nativeEvent;
 
-          //如果是weixin schema，打开微信
-          if(url.indexOf("weixin") == 0){
+          //如果是schema，打开浏览器
+          if(url.indexOf("weixin") == 0 || url.indexOf("alipay") == 0){
             Linking.openURL(url);
           }
         }}
