@@ -13,10 +13,30 @@ import * as Location from 'expo-location';
 import { WebView } from 'react-native-webview';
 
 const {assetsHost, customerId} = getEnv();
-
+let webViewCanGoBack = false;
+let lastClickedTime = new Date();
 export default function WebViewPage({ uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange = ()=>{}}) {
 
   const webviewHandler = useRef(null);
+
+  useEffect(()=>{
+    navigation.addListener('beforeRemove', (e) => {
+      const currentClickedTime = new Date();
+
+      //如果是快速双击，则关闭
+      // if((currentClickedTime - lastClickedTime) < 200){
+      //   lastClickedTime = currentClickedTime;
+      //   webViewCanGoBack = false;
+      //   return;
+      // }
+      if(webViewCanGoBack){
+        webviewHandler.current.goBack();
+        e.preventDefault();
+        return;
+      }
+      webViewCanGoBack = false;
+    })
+  },[])
   
   if(pageTitle){
     navigation.setOptions({
@@ -27,7 +47,7 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
   //插入token.
   const injectedJavaScriptBeforeContentLoaded = `(function() {
       localStorage.setItem("CUSTOMER_ID","${customerId}");
-    })
+    })();
   `
   const onload = ()=>{
     const injectJavascriptStr =  `(function() {
@@ -144,14 +164,21 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
         domStorageEnabled={true}
         originWhitelist = {["*"]}
         applicationNameForUserAgent={'GucciApp/1.0.0'}
-        onNavigationStateChange={onNavigationStateChange}
+        onNavigationStateChange={(navState)=>{
+          webViewCanGoBack = navState.canGoBack;
+          console.log("nativeEvent.canGoBack", webViewCanGoBack);
+          onNavigationStateChange && onNavigationStateChange();
+        }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onLoadStart={(syntheticEvent) => {
+
+          
           const { nativeEvent } = syntheticEvent;
           const { url } = nativeEvent;
+        
 
           //如果是schema，打开浏览器
-          if(url.indexOf("weixin") == 0 || url.indexOf("alipay") == 0){
+          if(url.indexOf("weixin") == 0 || url.indexOf("alipay") >-1){
             Linking.openURL(url);
           }
         }}

@@ -28,6 +28,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      console.log("======focus======")
       init();
     });
 
