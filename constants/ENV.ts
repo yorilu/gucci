@@ -20,13 +20,13 @@ const CONFIG = {
     customerId: "1579784156951166977"
   },
   prod: {
-    api: "https://interests-m.billbear.vip/api",
+    api: "https://interests-m.billbear.vip/api/",
     assetsHost: "http://ka-img.billbear.cn/",
-    host: "https://interests-m.billbear.vip/",
-    customerId: "1579784156951166977"
+    host: "https://interests-m.shanghaibinyu.top/",
+    customerId: "1553282691992756226"
   }
 }
 
 export default function(){
-  return CONFIG["test"]
+  return CONFIG["prod"]
 }

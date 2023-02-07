@@ -22,13 +22,12 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
   useEffect(()=>{
     navigation.addListener('beforeRemove', (e) => {
       const currentClickedTime = new Date();
-
       //如果是快速双击，则关闭
-      // if((currentClickedTime - lastClickedTime) < 200){
-      //   lastClickedTime = currentClickedTime;
-      //   webViewCanGoBack = false;
-      //   return;
-      // }
+      if((currentClickedTime - lastClickedTime) < 100){
+        lastClickedTime = currentClickedTime;
+        webViewCanGoBack = false;
+        return;
+      }
       if(webViewCanGoBack){
         webviewHandler.current.goBack();
         e.preventDefault();
@@ -51,6 +50,8 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
   `
   const onload = ()=>{
     const injectJavascriptStr =  `(function() {
+        localStorage.setItem("CUSTOMER_ID","${customerId}");
+        
         //获取title, 通知webview
         try{
           let webViewPageTitle =  document.title || '';
@@ -166,16 +167,13 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
         applicationNameForUserAgent={'GucciApp/1.0.0'}
         onNavigationStateChange={(navState)=>{
           webViewCanGoBack = navState.canGoBack;
-          console.log("nativeEvent.canGoBack", webViewCanGoBack);
           onNavigationStateChange && onNavigationStateChange();
         }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onLoadStart={(syntheticEvent) => {
-
-          
           const { nativeEvent } = syntheticEvent;
           const { url } = nativeEvent;
-        
+          webViewCanGoBack = nativeEvent.canGoBack;
 
           //如果是schema，打开浏览器
           if(url.indexOf("weixin") == 0 || url.indexOf("alipay") >-1){
@@ -184,7 +182,24 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
         }}
         onError={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
+          webViewCanGoBack = nativeEvent.canGoBack;
           console.log("webview onError", nativeEvent)
+        }}
+        onLoadEnd={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          webViewCanGoBack = nativeEvent.canGoBack;
+        }}
+        onLoadProgress={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          webViewCanGoBack = nativeEvent.canGoBack;
+        }}
+        onHttpError={(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          webViewCanGoBack = nativeEvent.canGoBack;
+        }}
+        onContentProcessDidTerminate= {(syntheticEvent) => {
+          const { nativeEvent } = syntheticEvent;
+          webViewCanGoBack = nativeEvent.canGoBack;
         }}
         ref={ webviewHandler }
         source={{ uri }} 
