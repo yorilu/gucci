@@ -21,7 +21,7 @@ const CONFIG = {
   },
   prod: {
     api: "https://interests-m.billbear.vip/api/",
-    assetsHost: "http://ka-img.billbear.cn/",
+    assetsHost: "https://ka-img-dev.billbear.cn/",
     host: "https://interests-m.shanghaibinyu.top/",
     customerId: "1553282691992756226"
   }
