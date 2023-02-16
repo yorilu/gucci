@@ -10,15 +10,18 @@ import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
 import Utils from '../../utils/index';
 import { useFocusEffect } from '@react-navigation/native';
+import $fetch from '../../utils/fetch';
 
-const { getUrlWithHost , goWebView} = Utils;
+const { getUrlWithHost , goWebView, customerId} = Utils;
 
-const {assetsHost} = getEnv();
+const {assetsHost, biyingApi} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+
+
 
   const [firstBannerData, setFirstBannerData] = useState([]);
   const [secondBannerData, setSecondBannerData] = useState([]);
@@ -36,10 +39,16 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }, [navigation]);
 
   const init = async ()=>{
-    const data1 = await querySceneConfig({position: "BANNER"});
-    const data2 = await queryLocation({position: "OPERATION_LOCATION"});
-    const data3 = await querySceneConfig({position: "OPERATION_LOCATION"});
-    const data4 = await queryHotGoods();
+    const biyingInfo = await $fetch(biyingApi,{
+      out_uid: customerId
+    })
+    
+    const [data1, data2, data3 ,data4] = await Promise.all([
+      querySceneConfig({position: "BANNER"}),
+      queryLocation({position: "OPERATION_LOCATION"}),
+      querySceneConfig({position: "OPERATION_LOCATION"}),
+      queryHotGoods()
+    ])
 
     setFirstBannerData(data1.records || []);
 
