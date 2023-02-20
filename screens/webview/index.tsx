@@ -15,7 +15,6 @@ const {assetsHost, customerId} = getEnv();
 
 export default function WebViewPage({ navigation, route = {}, uri}) {
   uri = route.params.uri || uri;
-  console.log('======uri====', uri);
 
   // const [webViewCanGoBack , setWebViewCanGoBack] = useState(false);
   // const [webViewHandler, setWebViewHandler] = useState(null);
