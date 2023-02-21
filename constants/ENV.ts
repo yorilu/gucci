@@ -32,5 +32,5 @@ const CONFIG = {
 }
 
 export default function(){
-  return CONFIG["prod"]
+  return CONFIG["test"]
 }
