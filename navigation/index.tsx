@@ -90,22 +90,22 @@ function BottomTabNavigator() {
           // ),
         })}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Cata"
         component={TabTwoScreen}
         options={{
-          title: '分类',
-          tabBarIcon: ({ color }) => <Entypo name="grid" color={color} size={26}/>,
+          title: '我的收益',
+          tabBarIcon: ({ color }) => <AntDesign name="redenvelopes" color={color} size={26}/>,
         }}
       />
       <BottomTab.Screen
         name="Cart"
         component={TabThreeScreen}
         options={{
-          title: '购物车',
-          tabBarIcon: ({ color }) => <AntDesign name="shoppingcart" color={color} size={26}/>,
+          title: '话费订单',
+          tabBarIcon: ({ color }) => <Entypo name="list" color={color} size={26}/>,
         }}
-      /> */}
+      />
       <BottomTab.Screen
         name="Mine"
         component={TabFourScreen}

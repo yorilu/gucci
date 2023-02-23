@@ -16,8 +16,11 @@ import { WebView } from 'react-native-webview';
 
 const {assetsHost, customerId, BYN_MIDDLE_PAGE, biyingApi, BYN_APP_KEY, BYN_APP_SECRET} = getEnv();
 let webViewHasHistory = false;
+let isFirstLoadBynUrlFlag = false; //是否是第一次加载必应鸟连接
 let lastClickedTime = new Date();
 let bynToken = null;
+
+const BYN_HOST  = "sda4.top";
 export default function WebViewPage(props) {
 
   console.log("webview props", props);
@@ -26,7 +29,12 @@ export default function WebViewPage(props) {
   const webviewHandler = useRef(null);
   const [myWebviewUri, setMyWebviewUri] = useState("");
 
-      //如果是必应鸟链接，则要拼上token
+
+  useEffect(()=>{
+    console.log("webview加载的url为：", myWebviewUri)
+  }, [myWebviewUri])
+
+  //如果是必应鸟链接，则要拼上token
      
   const getByToken = async (memberId)=>{
 
@@ -58,7 +66,7 @@ export default function WebViewPage(props) {
 
   useEffect(()=>{
     //if(1){
-    if(uri.indexOf("sda4.top")>-1){
+    if(uri.indexOf(BYN_HOST)>-1){
       const middlePageUrl = BYN_MIDDLE_PAGE.replace("{customerId}", customerId);
       console.log("middlePageUrl", middlePageUrl)
       setMyWebviewUri(middlePageUrl);
@@ -103,14 +111,17 @@ export default function WebViewPage(props) {
         
         //获取title, 通知webview
         try{
-          let webViewPageTitle =  document.title || '';
-          const titleMsg = JSON.stringify({
-            type: 'setTitle',
-            data: {
-              title: webViewPageTitle
-            }
-          });
-          window.ReactNativeWebView.postMessage(titleMsg);
+          //晚几秒，有个单页应用
+          setTimeout(()=>{
+            let webViewPageTitle =  document.title || '';
+            const titleMsg = JSON.stringify({
+              type: 'setTitle',
+              data: {
+                title: webViewPageTitle
+              }
+            });
+            window.ReactNativeWebView.postMessage(titleMsg);
+          }, 500)
         }catch(e){
           console.log("webViewPageTitle error", e);
         }
@@ -187,8 +198,9 @@ export default function WebViewPage(props) {
             }else{
               bynUri += "&";
             }
-            bynUri += `token=${token}`
-            
+            bynUri += `token=${token}`;
+            isFirstLoadBynUrlFlag = true;
+
             setMyWebviewUri(bynUri);
           }
           break;
@@ -209,7 +221,6 @@ export default function WebViewPage(props) {
         data = "Permission to access location was denied";
       }else{
         data = await Location.getCurrentPositionAsync({});
-        debugger;
       }
     }catch(e){
       console.log("getLocation error", e);
@@ -232,6 +243,8 @@ export default function WebViewPage(props) {
         javaScriptEnabled={true}
         domStorageEnabled={true}
         originWhitelist = {["*"]}
+        allowFileAccessFromFileURLs={true}
+        allowUniversalAccessFromFileURLs={true}
         applicationNameForUserAgent={'GucciApp/1.0.0'}
         onNavigationStateChange={(navState)=>{
           webViewHasHistory = navState.canGoBack;
@@ -241,16 +254,41 @@ export default function WebViewPage(props) {
         onLoadStart={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
           const { url } = nativeEvent;
+
           webViewHasHistory = nativeEvent.canGoBack;
 
-          //如果是schema，打开浏览器
-          if(url.indexOf("weixin") == 0 || url.indexOf("alipay") >-1){
+          if(isFirstLoadBynUrlFlag){
+             try{
+              webviewHandler.current.clearHistory();
+              webViewHasHistory = false;
+            }catch(e){
+              console.log(e);
+            }
+
+            isFirstLoadBynUrlFlag = false;
+          }
+
+          //如果是支付，则倒退两个，因为上一个页面可能是自动跳转过来的。
+          if(url.indexOf("alipay")>-1 || url.indexOf("weixin")>-1){
             Linking.openURL(url);
+            webviewHandler.current.goBack();
+            webviewHandler.current.goBack();
+            return;
+          }
+
+          //如果有其他schema，则打开浏览器
+          if(url.indexOf("http")!=0){
+            Linking.openURL(url);
+            webviewHandler.current.goBack();
+            return;
+            //webviewHandler.current.goBack();
           }
         }}
+
         onError={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
           webViewHasHistory = nativeEvent.canGoBack;
+          //webviewHandler.current.goBack();
           console.log("webview onError", nativeEvent)
         }}
         onLoadEnd={(syntheticEvent) => {

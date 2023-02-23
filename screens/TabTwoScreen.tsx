@@ -5,7 +5,9 @@ import Webview from './webview/index'
 import { Text, View } from '../components/Themed';
 import Utils from '../utils/index'
 import WebView from '../components/WebView/index';
+import getEnv from '../constants/ENV';
 
+const {customerId, INCOME_URL} = getEnv();
 const { getUrlWithHost , goWebView} = Utils;
 const uri = getUrlWithHost("mall/pages/category/index");
 console.log("==uri===", uri);
@@ -13,7 +15,7 @@ console.log("==uri===", uri);
 export default function TabTwoScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <WebView uri={uri} navigation={navigation}></WebView>
+      <WebView uri={INCOME_URL} navigation={navigation}></WebView>
     </View>
   );
 }

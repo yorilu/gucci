@@ -5,10 +5,11 @@ import Webview from './webview/index'
 import { Text, View } from '../components/Themed';
 import Utils from '../utils/index'
 import WebView from '../components/WebView/index';
+import getEnv from '../constants/ENV';
 
 const { getUrlWithHost , goWebView} = Utils;
-const uri = getUrlWithHost("mall/pages/cart/cart");
-console.log("==uri===", uri);
+const {customerId, TELE_BILL_URL} = getEnv();
+const uri = `${TELE_BILL_URL}?customerId=${customerId}`;
 
 export default function TabTwoScreen({ navigation }) {
   return (
