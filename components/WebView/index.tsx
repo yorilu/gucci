@@ -9,31 +9,80 @@ import Icons from '../../constants/Icons';
 import getEnv from '../../constants/ENV';
 import { Button, Carousel } from '@ant-design/react-native';
 import * as Location from 'expo-location';
+import md5 from 'js-md5';
+import $fetch from '../../utils/fetch';
 
 import { WebView } from 'react-native-webview';
 
-const {assetsHost, customerId} = getEnv();
-let webViewCanGoBack = false;
+const {assetsHost, customerId, BYN_MIDDLE_PAGE, biyingApi, BYN_APP_KEY, BYN_APP_SECRET} = getEnv();
+let webViewHasHistory = false;
 let lastClickedTime = new Date();
-export default function WebViewPage({ uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange = ()=>{}}) {
+let bynToken = null;
+export default function WebViewPage(props) {
 
+  console.log("webview props", props);
+  
+  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange } = props;
   const webviewHandler = useRef(null);
+  const [myWebviewUri, setMyWebviewUri] = useState("");
+
+      //如果是必应鸟链接，则要拼上token
+     
+  const getByToken = async (memberId)=>{
+
+    if(bynToken){
+      return bynToken;
+    }
+
+    //去必应鸟拿token
+    const t = Date.now();
+    const sign = md5("3.0" + BYN_APP_SECRET + t+ BYN_APP_SECRET);
+    const biyingInfo = await $fetch(biyingApi,{
+      out_uid: memberId
+    },{
+      headers: {
+        "app-key": BYN_APP_KEY,
+        sign,
+        t,
+        v: '3.0'
+      }
+    })
+
+    if(biyingInfo.token){
+      bynToken = biyingInfo.token;
+    }
+
+    return bynToken;
+  }
+  
 
   useEffect(()=>{
+    //if(1){
+    if(uri.indexOf("sda4.top")>-1){
+      const middlePageUrl = BYN_MIDDLE_PAGE.replace("{customerId}", customerId);
+      console.log("middlePageUrl", middlePageUrl)
+      setMyWebviewUri(middlePageUrl);
+    }else{
+      setMyWebviewUri(uri);
+    }
+
+
     navigation.addListener('beforeRemove', (e) => {
       const currentClickedTime = new Date();
-      //如果是快速双击，则关闭
-      if((currentClickedTime - lastClickedTime) < 100){
-        lastClickedTime = currentClickedTime;
-        webViewCanGoBack = false;
-        return;
+      //如果是快速双击，则可以关闭当前webview
+      if((currentClickedTime - lastClickedTime) < 200){
+        webViewHasHistory = false;
       }
-      if(webViewCanGoBack){
+
+      //赋予最后一次点击事件.
+      lastClickedTime = currentClickedTime;
+
+      if(webViewHasHistory){
         webviewHandler.current.goBack();
         e.preventDefault();
         return;
       }
-      webViewCanGoBack = false;
+      webViewHasHistory = false;
     })
   },[])
   
@@ -124,6 +173,25 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
           // });
           // webviewHandler.postMessage(message);
           break;
+        case 'message':
+          //这里肯定是必应鸟链接
+          if(data.member_id){
+            const token = await getByToken(data.member_id);
+            console.log("必应鸟Token = ", token);
+            if(!token){
+              return;
+            }
+            let bynUri = uri;
+            if(bynUri.indexOf("?")==-1){
+              bynUri += "?";
+            }else{
+              bynUri += "&";
+            }
+            bynUri += `token=${token}`
+            
+            setMyWebviewUri(bynUri);
+          }
+          break;
       }
       
     }catch(e){
@@ -160,20 +228,20 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
 
   return (
     <View style={styles.container}  style={{ flex: 1, backgroundColor:'#F7F7F7' }}>
-      {uri && <WebView 
+      {myWebviewUri && <WebView 
         javaScriptEnabled={true}
         domStorageEnabled={true}
         originWhitelist = {["*"]}
         applicationNameForUserAgent={'GucciApp/1.0.0'}
         onNavigationStateChange={(navState)=>{
-          webViewCanGoBack = navState.canGoBack;
+          webViewHasHistory = navState.canGoBack;
           onNavigationStateChange && onNavigationStateChange();
         }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onLoadStart={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
           const { url } = nativeEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
 
           //如果是schema，打开浏览器
           if(url.indexOf("weixin") == 0 || url.indexOf("alipay") >-1){
@@ -182,27 +250,29 @@ export default function WebViewPage({ uri = '' , navigation =null , getHanler = 
         }}
         onError={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
           console.log("webview onError", nativeEvent)
         }}
         onLoadEnd={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
         }}
         onLoadProgress={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
         }}
         onHttpError={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
         }}
         onContentProcessDidTerminate= {(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          webViewCanGoBack = nativeEvent.canGoBack;
+          webViewHasHistory = nativeEvent.canGoBack;
         }}
         ref={ webviewHandler }
-        source={{ uri }} 
+        source={{ 
+          uri: myWebviewUri
+        }} 
         onLoad={onload}
         style={{backgroundColor:"#F7F7F7"}}
         onMessage={onMessage}

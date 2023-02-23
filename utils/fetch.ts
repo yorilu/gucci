@@ -1,11 +1,11 @@
-export default function (url, data = {}, {
+export default function (url, body = {}, {
   method = 'POST',
   headers = {}
 } = {}){
   return new Promise((rs,rj)=>{
     try{
-      let body = JSON.stringify(data),
-      options = {
+      body = JSON.stringify(body);
+      let options = {
         method,
         headers: {
           Accept: 'application/json',
@@ -14,11 +14,15 @@ export default function (url, data = {}, {
         },
         body
       }
-      
-      console.log("------REQUEST-------");
-      console.log("url",url);
-      console.log("body",body);
-      console.log("------REQUEST END-------");
+
+      const showLog = false;
+      if(showLog){
+        console.log("------REQUEST-------");
+        console.log("url",url);
+        console.log("headers",headers);
+        console.log("body",body);
+        console.log("------REQUEST END-------");
+      }
       
       
         fetch(url, options)
@@ -30,10 +34,11 @@ export default function (url, data = {}, {
           }
         })
         .then(response=>{
-          console.log("------RESPONSE-------");
-          console.log("response",response);
-          console.log("------RESPONSE END-------");
-
+          if(showLog){
+            console.log("------RESPONSE-------");
+            console.log("response",response);
+            console.log("------RESPONSE END-------");
+          }
           if(response.code == 0){
             rs(response.data);
           }
