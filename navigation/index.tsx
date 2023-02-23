@@ -72,7 +72,7 @@ function BottomTabNavigator() {
         name="Home"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: '商城',
+          title: '首页',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} size={26}/>,
           // headerRight: () => (
           //   <Pressable
