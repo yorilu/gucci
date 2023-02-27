@@ -23,7 +23,7 @@ let bynToken = null;
 const BYN_HOST  = "sda4.top";
 export default function WebViewPage(props) {
 
-  console.log("webview props", props);
+  console.log("webview已加载 props为:", props);
   
   const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange } = props;
   const webviewHandler = useRef(null);
@@ -68,7 +68,6 @@ export default function WebViewPage(props) {
     //if(1){
     if(uri.indexOf(BYN_HOST)>-1){
       const middlePageUrl = BYN_MIDDLE_PAGE.replace("{customerId}", customerId);
-      console.log("middlePageUrl", middlePageUrl)
       setMyWebviewUri(middlePageUrl);
     }else{
       setMyWebviewUri(uri);
@@ -76,6 +75,9 @@ export default function WebViewPage(props) {
 
 
     navigation.addListener('beforeRemove', (e) => {
+      console.log("beforeRemove webViewHasHistory", webViewHasHistory);
+
+      const curr = webviewHandler.current;
       const currentClickedTime = new Date();
       //如果是快速双击，则可以关闭当前webview
       if((currentClickedTime - lastClickedTime) < 200){
@@ -107,6 +109,7 @@ export default function WebViewPage(props) {
   `
   const onload = ()=>{
     const injectJavascriptStr =  `(function() {
+        //增加列熊customer_id
         localStorage.setItem("CUSTOMER_ID","${customerId}");
         
         //获取title, 通知webview
@@ -124,6 +127,35 @@ export default function WebViewPage(props) {
           }, 500)
         }catch(e){
           console.log("webViewPageTitle error", e);
+        }
+
+
+        //解决安卓下面有可能获取不到navigationStateChange的方法
+        const postStateChangeMsg = ()=>{
+          const popstateMsg = JSON.stringify({
+            type: 'navigationStateChange'
+          })
+
+           window.ReactNativeWebView.postMessage(popstateMsg);
+        }
+        
+
+        function wrap(fn) {
+          return function wrapper() {
+            var res = fn.apply(this, arguments);
+            postStateChangeMsg();
+            return res;
+          }
+        }
+
+        history.pushState = wrap(history.pushState);
+        history.replaceState = wrap(history.replaceState);
+        window.addEventListener('popstate', function() {
+          postStateChangeMsg()
+        });
+
+        window.body.onhashchange = function(){
+          postStateChangeMsg()
         }
 
         // //测试定位
@@ -203,6 +235,8 @@ export default function WebViewPage(props) {
 
             setMyWebviewUri(bynUri);
           }
+        case 'navigationStateChange':
+          webViewHasHistory = nativeEvent.canGoBack;
           break;
       }
       
@@ -249,6 +283,7 @@ export default function WebViewPage(props) {
         onNavigationStateChange={(navState)=>{
           webViewHasHistory = navState.canGoBack;
           onNavigationStateChange && onNavigationStateChange();
+          console.log("onNavigationStateChange webViewHasHistory:", webViewHasHistory);
         }}
         injectedJavaScriptBeforeContentLoaded={injectedJavaScriptBeforeContentLoaded}
         onLoadStart={(syntheticEvent) => {
@@ -268,44 +303,19 @@ export default function WebViewPage(props) {
             isFirstLoadBynUrlFlag = false;
           }
 
-          //如果是支付，则倒退两个，因为上一个页面可能是自动跳转过来的。
-          if(url.indexOf("alipay")>-1 || url.indexOf("weixin")>-1){
+          console.log("onLoadStart webViewHasHistory:", webViewHasHistory);
+        }}
+        onShouldStartLoadWithRequest={(request) => {
+          const url = request.url;
+          console.log("onShouldStartLoadWithRequest", url);
+          //如果是其他scheme, 支付宝或者，微信支付，则直接打开游览器。
+          if(!url.startsWith("http") || url.indexOf("alipay")>-1 || url.indexOf("weixin")>-1){
+            webviewHandler.current.goBack();
             Linking.openURL(url);
-            webviewHandler.current.goBack();
-            webviewHandler.current.goBack();
-            return;
+            return false;
           }
 
-          //如果有其他schema，则打开浏览器
-          if(url.indexOf("http")!=0){
-            Linking.openURL(url);
-            webviewHandler.current.goBack();
-            return;
-            //webviewHandler.current.goBack();
-          }
-        }}
-
-        onError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          webViewHasHistory = nativeEvent.canGoBack;
-          //webviewHandler.current.goBack();
-          console.log("webview onError", nativeEvent)
-        }}
-        onLoadEnd={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          webViewHasHistory = nativeEvent.canGoBack;
-        }}
-        onLoadProgress={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          webViewHasHistory = nativeEvent.canGoBack;
-        }}
-        onHttpError={(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          webViewHasHistory = nativeEvent.canGoBack;
-        }}
-        onContentProcessDidTerminate= {(syntheticEvent) => {
-          const { nativeEvent } = syntheticEvent;
-          webViewHasHistory = nativeEvent.canGoBack;
+          return true;
         }}
         ref={ webviewHandler }
         source={{ 

@@ -69,10 +69,10 @@ function BottomTabNavigator() {
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="Home"
+        name="首页"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: '首页',
+          tabBarLabel: '首页',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} size={26}/>,
           // headerRight: () => (
           //   <Pressable
@@ -91,26 +91,26 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name="Cata"
+        name="我的收益"
         component={TabTwoScreen}
         options={{
-          title: '我的收益',
+          tabBarLabel: '我的收益',
           tabBarIcon: ({ color }) => <AntDesign name="redenvelopes" color={color} size={26}/>,
         }}
       />
       <BottomTab.Screen
-        name="Cart"
+        name="话费订单"
         component={TabThreeScreen}
         options={{
-          title: '话费订单',
+          tabBarLabel: '话费订单',
           tabBarIcon: ({ color }) => <Entypo name="list" color={color} size={26}/>,
         }}
       />
       <BottomTab.Screen
-        name="Mine"
+        name="我的"
         component={TabFourScreen}
         options={{
-          title: '我的',
+          tabBarLabel: '我的',
           tabBarIcon: ({ color }) => <AntDesign name="user" color={color}  size={26}/>,
         }}
       />
