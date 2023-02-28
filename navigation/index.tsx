@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName, Pressable} from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -69,7 +69,7 @@ function BottomTabNavigator() {
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="首页"
+        name="index"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           tabBarLabel: '首页',
@@ -90,14 +90,14 @@ function BottomTabNavigator() {
           // ),
         })}
       />
-      <BottomTab.Screen
-        name="我的收益"
+    {/*  <BottomTab.Screen
+        name="income"
         component={TabTwoScreen}
         options={{
           tabBarLabel: '我的收益',
           tabBarIcon: ({ color }) => <AntDesign name="redenvelopes" color={color} size={26}/>,
         }}
-      />
+      />*/}
       <BottomTab.Screen
         name="话费订单"
         component={TabThreeScreen}

@@ -1,4 +1,4 @@
-import { Image , ScrollView, Linking, TouchableWithoutFeedback} from 'react-native';
+import { Image , ScrollView, Linking, TouchableWithoutFeedback, Dimensions} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import styles from './styles'
 
@@ -13,7 +13,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import $fetch from '../../utils/fetch';
 import md5 from 'js-md5';
 
+const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
+
+const BANNER_SIZE = {
+  width: 686,
+  height: 270
+}
 
 const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE} = getEnv();
 const getFile = (key)=>{
@@ -117,6 +123,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     }
   }
 
+
+  const bannerCarouselHeight =  WINDOW.width / BANNER_SIZE.width * BANNER_SIZE.height;
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -136,7 +145,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
           {/* Banner */}
           { firstBannerData && !!firstBannerData.length && <Carousel 
-            style={styles.bannerCarousel} 
+            style={{...styles.bannerCarousel, height: bannerCarouselHeight}} 
             autoplay
             infinite
             dots={false}
