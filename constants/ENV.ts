@@ -1,5 +1,5 @@
 
-const env = 'test';
+const env = 'prod';
 
 const CONFIG = {
   dev: {
@@ -50,7 +50,7 @@ const CONFIG = {
     biyingApi: "http://v3.biyingniao.com/api/v3/auth/union_login",
     BYN_APP_KEY:"ejdwle",
     BYN_APP_SECRET:"d5a9f83b35b43e1b8b142357ee6bbe39",
-    BYN_MIDDLE_PAGE: "https://interests-m.billbear.vip/mall/pages/app-middle/index/?customerId={customerId}",
+    BYN_MIDDLE_PAGE: "https://interests-m.shanghaibinyu.top/mall/pages/app-middle/index/?customerId={customerId}",
     TELE_BILL_URL: "https://interests-m.shanghaibinyu.top/recharge-center/pages/order/index",
     INCOME_URL: "https://46mkls.sda4.top/user/reports?app_key=ejdwle&invite_code=ABLK3Q3"
   }

@@ -69,7 +69,7 @@ function BottomTabNavigator() {
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="index"
+        name="超多优惠权益尽在宝藏卡"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           tabBarLabel: '首页',
@@ -98,14 +98,14 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color }) => <AntDesign name="redenvelopes" color={color} size={26}/>,
         }}
       />*/}
-      <BottomTab.Screen
+    {/*  <BottomTab.Screen
         name="话费订单"
         component={TabThreeScreen}
         options={{
           tabBarLabel: '话费订单',
           tabBarIcon: ({ color }) => <Entypo name="list" color={color} size={26}/>,
         }}
-      />
+      />*/}
       <BottomTab.Screen
         name="我的"
         component={TabFourScreen}
