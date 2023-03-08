@@ -27,7 +27,7 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions":["ACCESS_FINE_LOCATION"],
+      "permissions":["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
       "package": "io.gucci.client"
     },
     "web": {

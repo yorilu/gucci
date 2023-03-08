@@ -246,7 +246,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         </View>
 
         <View style={styles.blockTitle}>
-          <Text style={styles.blockTitleText}>猜你喜欢</Text>
+          <Text style={styles.blockTitleText}>今日特卖</Text>
         </View>
 
         <View style={styles.hotGoods}>
