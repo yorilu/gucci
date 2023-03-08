@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Linking, ScrollView} from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Linking, ScrollView, BackHandler, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -22,6 +22,7 @@ export default function NotFoundScreen({ navigation }: RootStackScreenProps<'Not
       try{
         const authorize = await AsyncStorage.getItem('Authorize');
         if(authorize == 1){
+        //if(false){
           navigation.navigate("Main");
         }else{
           setShow(true);
@@ -47,7 +48,11 @@ export default function NotFoundScreen({ navigation }: RootStackScreenProps<'Not
   }
 
   const disagree = ()=>{
-    RNExitApp.exitApp();
+    if ( Platform.OS === 'android' ) {
+      BackHandler.exitApp();
+    } else {
+      RNExitApp.exitApp();
+    }
   }
 
 
@@ -90,10 +95,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#7F7F7F"
   },
   wrap:{
-    width: 360,
+    width: 320,
     height: 400,
     borderRadius: 6,
-    padding: 15
+    padding: 15,
+    paddingBottom: 0
   },
   btnWrap:{
     display: "flex",
@@ -102,11 +108,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   btn:{
-    width: 60,
-    height: 40,
+    width: 80,
+    height: 30,
     display: "flex",
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 20,
+    marginVertical: 10
+  },
+  rightBtn: {
+    backgroundColor: "#EEE"
   },
   title: {
     fontSize: 20,
