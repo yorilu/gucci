@@ -22,6 +22,7 @@ export default function App() {
   useEffect(()=>{
     const init = async ()=>{
       const authorize = await AsyncStorage.getItem('Authorize');
+      console.log("当前authorize状态:", authorize)
       if(authorize == 1){
         setShow(true)
       }
