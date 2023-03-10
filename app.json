@@ -27,8 +27,8 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "blockedPermissions": ["READ_PHONE_STATE", "WRITE_SETTINGS"],
-      "permissions":["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
+      "permissions":[],
+      "blockedPermissions": ["READ_PHONE_STATE", "com.htc.launcher.permission.READ_SETTINGS"],
       "package": "io.gucci.client"
     },
     "web": {
