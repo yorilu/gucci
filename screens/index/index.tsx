@@ -77,6 +77,12 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
   const myGoWebView = (params)=>{
+    const { uri } = params;
+    if(!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1){
+      Linking.openURL(uri);
+      return false;
+    }
+
     goWebView({
       navigation,
       ...params
