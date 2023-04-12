@@ -12,6 +12,12 @@ import Utils from '../../utils/index';
 import { useFocusEffect } from '@react-navigation/native';
 import $fetch from '../../utils/fetch';
 import md5 from 'js-md5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment'
+import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
+
+const TODAY = moment().format("YYYY_MM_DD");
+const redGif = require('../../assets/images/red.gif');
 
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
@@ -21,7 +27,7 @@ const BANNER_SIZE = {
   height: 270
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE} = getEnv();
+const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -31,6 +37,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [secondBannerData, setSecondBannerData] = useState([]);
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
+  const [showRedBag, setShowRedBag] = useState(false);
 
 
 
@@ -67,6 +74,22 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     setOperationData(formatData || []);
     setSecondBannerData(data3.records || []);
     setHotGoods(data4.records || []);
+
+    try{
+      const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
+        method: "GET"
+      }) || {};
+
+      const value = await AsyncStorage.getItem(TODAY);
+
+      if(info.showRedBag && !value){
+        setShowRedBag(true);
+        AsyncStorage.setItem(TODAY, "1");
+      }
+    }catch(e){
+      console.log(e);
+    }
+
   }
 
   const onSearchClicked = ({} = {})=>{
@@ -129,12 +152,39 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     }
   }
 
+  const onRedBagClicked = ()=>{
+    setShowRedBag(false);
+    myGoWebView({
+      uri: REDBAG_URL
+    })
+  }
+
+
+  const onRedBagClose = ()=>{
+    setShowRedBag(false);
+  }
 
   const bannerCarouselHeight =  WINDOW.width / BANNER_SIZE.width * BANNER_SIZE.height;
 
   return (
     <ScrollView>
       <View style={styles.container}>
+        {
+          showRedBag && <View style={styles.redModal}>
+            <TouchableWithoutFeedback onPress={onRedBagClose}>
+              <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={onRedBagClicked}>
+              <Image
+                resizeMode={'cover'}
+                style={styles.redGif}
+                source={redGif}
+              />
+            </TouchableWithoutFeedback>
+
+          </View>
+        }
+
         <View style={styles.containerWrap}>
           {/* 搜索框 */}
           <View style={styles.searchWrap}>

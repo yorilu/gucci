@@ -1,18 +1,21 @@
-export default function (url, body = {}, {
+export default function (url, body = null, {
   method = 'POST',
   headers = {}
 } = {}){
   return new Promise((rs,rj)=>{
     try{
-      body = JSON.stringify(body);
+      
       let options = {
         method,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           ...headers
-        },
-        body
+        }
+      }
+
+      if(body){
+        options.body = JSON.stringify(body);
       }
 
       const showLog = false;
@@ -24,25 +27,30 @@ export default function (url, body = {}, {
         console.log("------REQUEST END-------");
       }
       
-      
-        fetch(url, options)
-        .then(response=>{
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw new Error('Something went wrong on API server!');
-          }
-        })
-        .then(response=>{
-          if(showLog){
-            console.log("------RESPONSE-------");
-            console.log("response",response);
-            console.log("------RESPONSE END-------");
-          }
+      fetch(url, options)
+      .then(response=>{
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error('Something went wrong on API server!');
+        }
+      })
+      .then(response=>{
+        if(showLog){
+          console.log("------RESPONSE-------");
+          console.log("response",response);
+          console.log("------RESPONSE END-------");
+        }
+
+        if(method == "GET"){
+          rs(response);
+        }else{
           if(response.code == 0){
             rs(response.data);
           }
-        });
+        }
+        
+      });
       
     }catch(e){
       rj(e);

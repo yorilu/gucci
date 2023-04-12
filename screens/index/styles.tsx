@@ -3,6 +3,31 @@ const Styles = StyleSheet.create({
   container: {
     backgroundColor: "#f8f8f8"
   },
+  redGif: {
+    width: 300,
+    height: 350,
+    position: 'relative'
+  },
+  redGifClose: {
+    position: "relative",
+    left: 140,
+    top: 10,
+    color: '#FFF',
+    padding: 10
+  },
+  redModal:{
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    height: "80%",
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 200,
+    left: 0,
+    top: 0,
+  },
   containerWrap:{
     paddingLeft: 12,
     paddingRight: 12,
