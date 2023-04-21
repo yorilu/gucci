@@ -11,14 +11,29 @@ import Utils from '../utils/'
 const {api:apiUrl, customerId=''} = getEnv();
 
 const Models = {
-  querySceneConfig: {
-    api: "newmall-client/client/sceneConfig/query"
+  // querySceneConfig: {
+  //   api: "newmall-client/client/sceneConfig/query"
+  // },
+  // queryLocation: {
+  //   api: "newmall-client/client/sceneConfig/queryLocation"
+  // },
+  // queryHotGoods: {
+  //   api: "newmall-client/client/sceneConfig/queryHotGoods"
+  // }
+  banner: {
+    api: 'app/banner'
   },
-  queryLocation: {
-    api: "newmall-client/client/sceneConfig/queryLocation"
+  category: {
+    api: 'app/category'
   },
-  queryHotGoods: {
-    api: "newmall-client/client/sceneConfig/queryHotGoods"
+  diamond: {
+    api: 'app/diamond'
+  },
+  waterfall: {
+    api: 'app/fall'
+  },
+  nav: {
+    api: 'app/nav'
   }
 }
 

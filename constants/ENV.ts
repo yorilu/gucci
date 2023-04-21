@@ -1,10 +1,10 @@
 
-const env = 'prod';
+const env = 'test';
 
 const CONFIG = {
   dev: {
     env,
-    api: "https://interests-m-dev.billbear.vip/api/",
+    api: "https://huafei-dev.billbear.vip",
     assetsHost: "http://ka-img-dev.billbear.cn/",
     host: "https://interests-m-dev.billbear.vip/",
     customerId: "1579784156951166977",
@@ -19,7 +19,7 @@ const CONFIG = {
   },
   test: {
     env,
-    api: "https://interests-m-test.billbear.vip/api/",
+    api: "https://huafei-test.billbear.vip",
     assetsHost: "http://ka-img-dev.billbear.cn/",
     host: "https://interests-m-test.billbear.vip/",
     customerId: "1500708711805132802",
