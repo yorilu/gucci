@@ -21,19 +21,19 @@ const Models = {
   //   api: "newmall-client/client/sceneConfig/queryHotGoods"
   // }
   banner: {
-    api: 'app/banner'
+    api: '/app/banner'
   },
   category: {
-    api: 'app/category'
+    api: '/app/category'
   },
   diamond: {
-    api: 'app/diamond'
+    api: '/app/diamond'
   },
   waterfall: {
-    api: 'app/fall'
+    api: '/app/fall'
   },
   nav: {
-    api: 'app/nav'
+    api: '/app/nav'
   }
 }
 

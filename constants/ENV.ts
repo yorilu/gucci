@@ -20,7 +20,7 @@ const CONFIG = {
   test: {
     env,
     api: "https://huafei-test.billbear.vip",
-    assetsHost: "http://ka-img-dev.billbear.cn/",
+    assetsHost: "https://huafei-test.billbear.vip",
     host: "https://interests-m-test.billbear.vip/",
     customerId: "1500708711805132802",
     biyingApi: "http://v3.biyingniao.com/api/v3/auth/union_login",

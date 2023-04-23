@@ -15,6 +15,24 @@ const Styles = StyleSheet.create({
     color: '#FFF',
     padding: 10
   },
+  tags:{
+    backgroundColor: 'rgba(0,0,0,0)',
+    flexDirection: "row",
+    marginTop: 17,
+    marginBottom: 9
+  },
+  tagWrap:{
+    backgroundColor: 'rgba(0,0,0,0)',
+    marginRight: 24
+  },
+  tagText: {
+    color: '#333',
+    fontSize: 14
+  },
+  tagTextSelected: {
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
   redModal:{
     display: "flex",
     flexDirection: "column",
@@ -33,7 +51,7 @@ const Styles = StyleSheet.create({
     paddingRight: 12,
     paddingTop: 15,
     paddingBottom: 15,
-    backgroundColor: "#FFF"
+    backgroundColor: "#F8F9FB"
   },
   searchIcon: {
     width: 20,
@@ -41,15 +59,31 @@ const Styles = StyleSheet.create({
     marginRight: 10
   },
   searchText: {
-    color: "#666"
+    color: "#666",
+    flex: 1
+  },
+  searchBtn:{
+    backgroundColor: '#FF4351',
+    padding: 4,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 50,
+  },
+  searchBtnText: {
+    color: "#FFF",
   },
   searchWrap: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#FFF",
     color: "#999",
     borderRadius: 50,
-    padding: 10,
+    position: 'relative',
+    top: -35,
+    marginBottom: -20,
+    padding: 8,
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   title: {
     fontSize: 20,
@@ -63,14 +97,11 @@ const Styles = StyleSheet.create({
   bannerCarousel:{
     height: 150,
     width: '100%',
-    borderRadius: 10,
-    marginTop: 12,
     backgroundColor: "#FFF"
   },
   bannerImage:{
     width: '100%',
-    height: 150,
-    borderRadius: 10
+    height: '100%'
   },
   secondBannerCarousel:{
     width: '100%',
@@ -88,6 +119,14 @@ const Styles = StyleSheet.create({
     width: 50,
     height: 50
   },
+  operationTitle: {
+    fontSize: 12,
+    color: '#333'
+  },
+  operationSubTitle: {
+    fontSize: 10,
+    color: '#999'
+  },
   slide1:{
     flex: 1,
     justifyContent: 'center',
@@ -95,8 +134,8 @@ const Styles = StyleSheet.create({
     backgroundColor: '#EEE'
   },
   operationCarousel:{
-    marginTop: 20,
-    width : '100%'
+    width : '100%',
+    borderRadius: 10
   },
   operationWrap:{
     display: "flex",

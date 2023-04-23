@@ -22,9 +22,9 @@ const redGif = require('../../assets/images/red.gif');
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
 
-const BANNER_SIZE = {
-  width: 686,
-  height: 270
+const FIRST_BANNER_SIZE = {
+  width: 750,
+  height: 476
 }
 
 const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL} = getEnv();
@@ -38,6 +38,16 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
   const [showRedBag, setShowRedBag] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [tagSelectedIndex, setTagSelectedIndex] = useState(0);
+
+  const [indexData, setIndexdata] = useState({
+    firstBannerData: [],
+    secondBannerData: [],
+    diamonds: [],
+    goods: [],
+    tags: []
+  })
 
 
 
@@ -51,29 +61,32 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }, [navigation]);
 
   const init = async ()=>{
-    const [data1, data2, data3 ,data4] = await Promise.all([
-      querySceneConfig({position: "BANNER"}),
-      queryLocation({position: "OPERATION_LOCATION"}),
-      querySceneConfig({position: "OPERATION_LOCATION"}),
-      queryHotGoods()
+    let [firstBannerData = [], secondBannerData = [], tags, diamonds, goods] = await Promise.all([
+      queryData({position: 1, modelName:'banner'}),
+      queryData({position: 2, modelName:'banner'}),
+      queryData({category: 1, modelName:'category'}),
+      queryData({category: 1, modelName:'diamond'}),
+      queryData({modelName:'waterfall'})
     ])
 
-    setFirstBannerData(data1.records || []);
-
     let formatData = [];
-
-    //整除8，分成多个数组。
-    data2?.records.map((item, index)=>{
-        const arrIndex = Math.floor((index)/10);
-        if(!formatData[arrIndex]){
-          formatData[arrIndex] = [];
-        }
-        formatData[arrIndex].push(item);
+    diamonds?.map((item, index)=>{
+      const arrIndex = Math.floor((index)/10);
+      if(!formatData[arrIndex]){
+        formatData[arrIndex] = [];
+      }
+      formatData[arrIndex].push(item);
     })
 
-    setOperationData(formatData || []);
-    setSecondBannerData(data3.records || []);
-    setHotGoods(data4.records || []);
+    diamonds = formatData;
+
+    setIndexdata({
+      firstBannerData,
+      secondBannerData,
+      diamonds,
+      tags,
+      goods
+    })
 
     try{
       const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
@@ -112,14 +125,19 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     })
   }
 
-  async function querySceneConfig({position = ''} = {}){
+  async function queryData({modelName = '', ...rest} = {}){
     try{
-      const data = await getModels("querySceneConfig").send({
-        scene:"MALL",
-        pageSize:100,
-        position
+      const {code, result = []} = await getModels(modelName).send({
+        ...rest
+      },{
+        method: "GET"
       })
-      return data;
+
+      if(code == 0){
+        return result;
+      }
+
+      return [];
     }catch(e){
       console.log(e)
     }
@@ -164,28 +182,46 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     setShowRedBag(false);
   }
 
-  const bannerCarouselHeight =  WINDOW.width / BANNER_SIZE.width * BANNER_SIZE.height;
+  const firstBannerCarouselHeight =  WINDOW.width / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        {
-          showRedBag && <View style={styles.redModal}>
-            <TouchableWithoutFeedback onPress={onRedBagClose}>
-              <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={onRedBagClicked}>
-              <Image
-                resizeMode={'cover'}
-                style={styles.redGif}
-                source={redGif}
-              />
-            </TouchableWithoutFeedback>
 
-          </View>
-        }
+        {/* Banner */}
+        { indexData.firstBannerData && !!indexData.firstBannerData.length && <Carousel 
+          style={{...styles.bannerCarousel, height: firstBannerCarouselHeight}} 
+          autoplay
+          infinite
+          dots={false}
+          autoplayInterval = { 5000 }
+        >
+
+          {
+            indexData.firstBannerData.map((item, index)=>{
+              const uri = getFile(item.img);
+              return (
+                <TouchableWithoutFeedback 
+                  key={index}
+                  onPress={()=>{
+                    myGoWebView({
+                      uri: item.url
+                    })
+                  }}
+                >
+                  <Image
+                    style={styles.bannerImage}
+                    source={{uri}}
+                  />
+                </TouchableWithoutFeedback>
+              )
+            })
+          }
+        </Carousel>}
 
         <View style={styles.containerWrap}>
+  
+
           {/* 搜索框 */}
           <View style={styles.searchWrap}>
             <Image
@@ -197,57 +233,41 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             <TouchableWithoutFeedback onPress={onSearchClicked}>
               <Text style={styles.searchText}>输入关键词进行搜索</Text>
             </TouchableWithoutFeedback>
+            <View style={styles.searchBtn}>
+              <Text style={styles.searchBtnText}>搜商品</Text>
+            </View>
           </View>
 
-          {/* Banner */}
-          { firstBannerData && !!firstBannerData.length && <Carousel 
-            style={{...styles.bannerCarousel, height: bannerCarouselHeight}} 
-            autoplay
-            infinite
-            dots={false}
-            autoplayInterval = { 5000 }
-          >
-            {
-              firstBannerData.map((item, index)=>{
-                const uri = getFile(item.images);
+          {/* tabs */}
+          {indexData.tags && !!indexData.tags.length && <View style={styles.tags}>
+              {indexData.tags.map((item, index)=>{
                 return (
-                  <TouchableWithoutFeedback 
-                    key={index}
-                    onPress={()=>{
-                      myGoWebView({
-                        uri: item.skipUrl
-                      })
-                    }}
-                  >
-                    <Image
-                      style={styles.bannerImage}
-                      source={{uri}}
-                    />
-                  </TouchableWithoutFeedback>
+                  <View style={styles.tagWrap}>
+                    <Text style={styles.tagText}>{item.name}</Text>
+                  </View>
                 )
-              })
-            }
-          </Carousel>
+              })}
+              
+            </View>
           }
-
           {/* 导航-金刚位 */}
-          {operationData && !!operationData.length && <Carousel 
+          {indexData.diamonds && !!indexData.diamonds.length && <Carousel 
             dots={false}
-            style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*140}} 
+            style={{...styles.operationCarousel, height: Math.ceil(indexData.diamonds.length / 5)*250}} 
           >
             {
-            operationData.map((items, index)=>{
+            indexData.diamonds.map((items, index)=>{
                 return (
                   <View key={index} style={styles.operationWrap}>
                     {
                       items.map((item, itemIndex)=>{
-                        const uri = getFile(item.images);
+                        const uri = getFile(item.img);
                         return (
                           <TouchableWithoutFeedback 
                             key={itemIndex}
                             onPress={()=>{
                               myGoWebView({
-                                uri: item.skipUrl
+                                uri: item.url
                               })
                             }}
                           >
@@ -256,7 +276,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                                 style={styles.operationImage}
                                 source={{uri}}
                               />
-                              <Text>{item.name}</Text>
+                              <Text style={styles.operationTitle}>{item.title}</Text>
+                              <Text style={styles.operationSubTitle}>{item.subtitle}</Text>
                             </View>
                           </TouchableWithoutFeedback>
                         )
@@ -342,8 +363,23 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             })
           }
         </View>
-
       </View>
+
+      {
+        showRedBag && <View style={styles.redModal}>
+          <TouchableWithoutFeedback onPress={onRedBagClose}>
+            <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={onRedBagClicked}>
+            <Image
+              resizeMode={'cover'}
+              style={styles.redGif}
+              source={redGif}
+            />
+          </TouchableWithoutFeedback>
+
+        </View>
+      }
     </ScrollView>
   );
 }

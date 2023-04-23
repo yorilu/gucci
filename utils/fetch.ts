@@ -1,3 +1,5 @@
+import { useFonts } from "expo-font";
+
 export default function (url, body = null, {
   method = 'POST',
   headers = {}
@@ -13,20 +15,22 @@ export default function (url, body = null, {
           ...headers
         }
       }
-
+    
       if(body){
-        options.body = JSON.stringify(body);
+        if(method == 'GET'){
+          if(!url.includes("?")){
+            url += "?"
+          }
+
+          for(var key in body){
+            url += `&${key}=${body[key]}`;
+          }
+        }else{
+          options.body = JSON.stringify(body)
+        }
       }
 
-      const showLog = false;
-      if(showLog){
-        console.log("------REQUEST-------");
-        console.log("url",url);
-        console.log("headers",headers);
-        console.log("body",body);
-        console.log("------REQUEST END-------");
-      }
-      
+      const showLog = true;
       fetch(url, options)
       .then(response=>{
         if (response.status === 200) {
@@ -37,6 +41,11 @@ export default function (url, body = null, {
       })
       .then(response=>{
         if(showLog){
+          console.log("------REQUEST-------");
+          console.log("url",url);
+          console.log("method",method);
+          console.log("headers",headers);
+          console.log("body",body);
           console.log("------RESPONSE-------");
           console.log("response",response);
           console.log("------RESPONSE END-------");
