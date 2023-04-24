@@ -51,6 +51,23 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   })
 
   React.useEffect(() => {
+
+    const fn = async()=>{
+      const categoryId =indexData.tags[tagSelectedIndex]? indexData.tags?.[tagSelectedIndex].id : null;
+      if(!categoryId) return;
+
+      const diamonds = await getDiamondsData(categoryId);
+      setIndexdata({
+        ...indexData,
+        diamonds
+      })
+    }
+
+    fn();
+    
+  }, [tagSelectedIndex]);
+
+  React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log("======focus======")
       init();
@@ -59,14 +76,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     return unsubscribe;
   }, [navigation]);
 
-  const init = async ()=>{
-    let [firstBannerData = [], secondBannerData = [], tags, diamonds, goods] = await Promise.all([
-      queryData({position: 1, modelName:'banner'}),
-      queryData({position: 2, modelName:'banner'}),
-      queryData({category: 1, modelName:'category'}),
-      queryData({category: 1, modelName:'diamond'}),
-      queryData({modelName:'waterfall'})
-    ])
+  const getDiamondsData = async (category)=>{
+    let diamonds = await queryData({category, modelName:'diamond'});
 
     let formatData = [];
     diamonds?.map((item, index)=>{
@@ -77,7 +88,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       formatData[arrIndex].push(item);
     })
 
-    diamonds = formatData;
+    return formatData;
+  }
+
+  const init = async ()=>{
+    let [firstBannerData = [], secondBannerData = [], tags, goods] = await Promise.all([
+      queryData({position: 1, modelName:'banner'}),
+      queryData({position: 2, modelName:'banner'}),
+      queryData({modelName:'category'}),
+      queryData({modelName:'waterfall'})
+    ])
+
+    const categoryId = tags?.[0].id;
+    
+    const diamonds = await getDiamondsData(categoryId);
 
     setIndexdata({
       firstBannerData,
