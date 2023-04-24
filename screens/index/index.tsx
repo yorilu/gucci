@@ -18,6 +18,7 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 
 const TODAY = moment().format("YYYY_MM_DD");
 const redGif = require('../../assets/images/red.gif');
+const tagSelectedImg = require('../../assets/images/tag-selected.png');
 
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
@@ -48,8 +49,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     goods: [],
     tags: []
   })
-
-
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -182,6 +181,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     setShowRedBag(false);
   }
 
+  const onTagClicked = (index)=>{
+    setTagSelectedIndex(index);
+  }
+
   const firstBannerCarouselHeight =  WINDOW.width / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
@@ -238,22 +241,30 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             </View>
           </View>
 
-          {/* tabs */}
+          {/* tags */}
           {indexData.tags && !!indexData.tags.length && <View style={styles.tags}>
               {indexData.tags.map((item, index)=>{
                 return (
-                  <View style={styles.tagWrap}>
-                    <Text style={styles.tagText}>{item.name}</Text>
-                  </View>
+                  <TouchableWithoutFeedback onPress={()=>{onTagClicked(index)}}>
+                    <View key={index} style={{...styles.tagWrap}} >
+                      <Text style={{...styles.tagText, ...(tagSelectedIndex == index?styles.tagTextSelected:{})}}>{item.name}</Text>
+                      {
+                        tagSelectedIndex == index && <Image
+                          style={styles.tagSelectedImg}
+                          source={tagSelectedImg}
+                          resizeMode = "contain"
+                        />
+                      }
+                    </View>
+                  </TouchableWithoutFeedback>
                 )
               })}
-              
             </View>
           }
           {/* 导航-金刚位 */}
           {indexData.diamonds && !!indexData.diamonds.length && <Carousel 
             dots={false}
-            style={{...styles.operationCarousel, height: Math.ceil(indexData.diamonds.length / 5)*250}} 
+            style={{...styles.operationCarousel, height: Math.ceil(indexData.diamonds.length / 2)*190}} 
           >
             {
             indexData.diamonds.map((items, index)=>{
@@ -290,8 +301,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           </Carousel>
           }
 
-          {/* Banner */}
-          { secondBannerData && !!secondBannerData.length && <Carousel 
+          {/* 第二个banner */}
+          { indexData.secondBannerData && !!indexData.secondBannerData.length && <Carousel 
             style={styles.secondBannerCarousel} 
             autoplay
             infinite
@@ -299,14 +310,14 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             autoplayInterval = { 5000 }
           >
             {
-              secondBannerData.map((item, index)=>{
-                const uri = getFile(item.images);
+              indexData.secondBannerData.map((item, index)=>{
+                const uri = getFile(item.img);
                 return (
                   <TouchableWithoutFeedback 
                     key={index}
                     onPress={()=>{
                       myGoWebView({
-                        uri: item.skipUrl
+                        uri: item.url
                       })
                     }}
                   >
@@ -322,16 +333,12 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           }
         </View>
 
-        <View style={styles.blockTitle}>
-          <Text style={styles.blockTitleText}>今日特卖</Text>
-        </View>
-
+        {/* 商品 */}
         <View style={styles.hotGoods}>
           {
-            hotGoods.map((item, index)=>{
-              const uri = getFile(item.goodsImageUrls?.[0] || '');
-              const sku = item.skuList[0];
-              let {marketPrice, sellPrice} = sku;
+            indexData.goods.map((item, index)=>{
+              const uri = getFile(item.img);
+              let {marketPrice, sellPrice} = item;
               marketPrice = marketPrice / 100;
               sellPrice = sellPrice / 100;
               return (
@@ -348,14 +355,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                     <Image
                       style={styles.hotItemImg}
                       source={{uri}}
+                      resizeMode="contain"
                     />
-                    <View style={styles.hotItemWrap}>
-                      <Text style={styles.hotItemName}>{item.goodsName}</Text>
-                      <View style={styles.hotItemMoneyWrap}>
-                        <Text style={styles.hotItemUnit}>￥</Text>
-                        <Text style={styles.hotItemMoney}>{sellPrice}</Text>
-                        <Text style={styles.hotItemMarketMoney}>￥{marketPrice}</Text>
-                      </View>
+                    <Text style={styles.hotItemName}>{item.name}</Text>
+                    <View style={styles.hotItemBtn}>
+                      <Text style={styles.hotItemText}>去下单</Text>
                     </View>
                   </View>
                 </TouchableWithoutFeedback>

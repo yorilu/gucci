@@ -23,7 +23,8 @@ const Styles = StyleSheet.create({
   },
   tagWrap:{
     backgroundColor: 'rgba(0,0,0,0)',
-    marginRight: 24
+    marginRight: 24,
+    position: 'relative'
   },
   tagText: {
     color: '#333',
@@ -31,7 +32,14 @@ const Styles = StyleSheet.create({
   },
   tagTextSelected: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    zIndex: 10
+  },
+  tagSelectedImg:{
+    width: '100%',
+    position: 'absolute',
+    bottom: -10,
+    zIndex: 1
   },
   redModal:{
     display: "flex",
@@ -107,7 +115,7 @@ const Styles = StyleSheet.create({
     width: '100%',
     height: 110,
     borderRadius: 10,
-    marginTop: 12,
+    marginTop: 0,
     backgroundColor: "#FFF"
   },
   secondBannerImage:{
@@ -127,22 +135,18 @@ const Styles = StyleSheet.create({
     fontSize: 10,
     color: '#999'
   },
-  slide1:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEE'
-  },
   operationCarousel:{
     width : '100%',
-    borderRadius: 10
+    borderRadius: 10,
+    backgroundColor: '#FFF',
+    marginBottom: 16
   },
   operationWrap:{
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "flex-start"
   },
   operationItem:{
     width: "20%",
@@ -174,46 +178,36 @@ const Styles = StyleSheet.create({
   hotItem:{
     width: "49%",
     display: "flex",
-    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "#FFF",
-    marginBottom: 10
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderRadius: 12
   },
   hotItemImg:{
-    height: 173,
-    width: "100%",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    width: 64,
+    height: 64,
+    marginBottom: 12
   },
   hotItemName:{
-    paddingTop: 10,
-    paddingBottom: 10
+    marginBottom: 10,
+    fontWeight: 'bold'
   },
-  hotItemWrap:{
-    paddingLeft: 10,
-    paddingBottom: 10,
-    paddingRight: 15
-  },
-  hotItemUnit:{
-    fontSize: 12,
-    color: '#ff4351'
-  },
-  hotItemMoney: {
-    fontSize: 20,
-    color: '#ff4351',
-    fontWeight: "bold",
-    marginRight: 5
-  },
-  hotItemMarketMoney:{
-    textDecorationLine: "line-through",
-    fontSize: 12,
-    color: "#999"
-  },
-  hotItemMoneyWrap:{
+  hotItemBtn:{
+    width: 90,
+    height: 26,
+    borderRadius: 30,
+    backgroundColor: '#FF4351',
     display: "flex",
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "flex-start"
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  hotItemText:{
+    color: '#FFF',
+    fontSize: 12
   }
 });
 
