@@ -223,7 +223,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           dots={false}
           autoplayInterval = { 5000 }
         >
-
           {
             indexData.firstBannerData.map((item, index)=>{
               const uri = getFile(item.img);

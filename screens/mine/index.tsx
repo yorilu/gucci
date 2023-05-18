@@ -20,7 +20,7 @@ const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
 const mineIncomeIcon = require('../../assets/images/mine/mine-income.png');
 const mineOrderBg = require('../../assets/images/mine/mine-order-bg.png');
-const mineOrder = require('../../assets/images/mine/mine-order.png');
+const mineOrderIcon = require('../../assets/images/mine/mine-order.png');
 
 
 const WINDOW = Dimensions.get("window");
@@ -28,16 +28,58 @@ const { getUrlWithHost , goWebView} = Utils;
 
 const FIRST_BANNER_SIZE = {
   width: 750,
-  height: 476
+  height: 300
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL} = getEnv();
+const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
-let token;
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
-  const [bannerData, setBannerData] = useState([]);
+
+
+
+
+export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+  const [indexData, setIndexdata] = useState({
+    bannerData: [],
+    myOrderData:[],
+    myData: []
+  })
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log("======focus======")
+      init();
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
+
+  const init = async ()=>{
+    let [bannerData = [], myOrderData = [], myData = []] = await Promise.all([
+      queryData({modelName:'banner', position: 3}),
+      queryData({modelName:'diamond', category: 55, position: 3}),
+      queryData({modelName:'diamond', category: 55, position: 2}),
+    ])
+    setIndexdata({
+      bannerData,
+      myOrderData,
+      myData
+    })
+  }
+
+  const myGoWebView = (params)=>{
+    const { uri } = params;
+    if(!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1){
+      Linking.openURL(uri);
+      return false;
+    }
+
+    goWebView({
+      navigation,
+      ...params
+    })
+  }
 
   async function queryData({modelName = '', ...rest} = {}){
     try{
@@ -62,17 +104,142 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   return (
     <ScrollView>
       <View style={styles.container}>
-      <Image source={mineBg} resizeMode="contain" resizeMethod="scale" style={styles.topBg}/>
-      <View style={styles.bodyWrap}>
-          <View style={{...styles.topLine, ...styles.topLineTitle}}>
-            <Text style={styles.topLineLeftText}>比克</Text>
-            <Text style={styles.topLineRightText}>100</Text>
-          </View>
-          <View style={styles.topLine}>
-            <Text style={styles.topLineLeftText}>15900001111</Text>
-            <Text style={styles.topLineRightText}>优惠券</Text>
+        {/* 顶部个人信息 */}
+        <View style={styles.topBgWrap}>
+          <Image source={mineBg} resizeMode="cover" resizeMethod="scale" style={styles.topBg}/>
+          <View style={styles.headerWrap}>
+            <View style={styles.topLine}>
+              <Text style={styles.topLineTitle}>比克</Text>
+              <Text style={styles.topLineTitle}>100</Text>
+            </View>
+            <View style={styles.topLine}>
+              <Text style={styles.topLineSubTitle}>15900001111</Text>
+              <Text style={styles.topLineSubTitle}>优惠券<AntDesign name="right" size={12} color="#999" /></Text>
+            </View>
           </View>
         </View>
+
+        <View style={styles.bodyWrap}>
+
+          {/* 订单收益 */}
+          <View style={styles.orderWrap}>
+            <TouchableWithoutFeedback 
+              onPress={()=>{
+                myGoWebView({
+                  uri: FANLI_URL
+                })
+              }}
+            >
+              <View style={styles.orderItem}>
+                <Image source={mineOrderBg} resizeMode="cover" style={styles.orderItemBg}/>
+                <Text style={styles.orderItemText}>返利订单收益</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback 
+              onPress={()=>{
+                myGoWebView({
+                  uri: OTHER_FANLI_URL
+                })
+              }}
+            >
+              <View style={styles.orderItem}>
+                <Image source={mineIncomeBg} resizeMode="cover" style={styles.orderItemBg}/>
+                <Text style={styles.orderItemText}>其他收益</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+
+          {/* Banner */}
+          { indexData.bannerData && !!indexData.bannerData.length && <Carousel 
+            style={{...styles.bannerCarousel, height: firstBannerCarouselHeight}} 
+            autoplay
+            infinite
+            dots={false}
+            autoplayInterval = { 5000 }
+          >
+            {
+              indexData.bannerData.map((item, index)=>{
+                const uri = getFile(item.img);
+                return (
+                  <TouchableWithoutFeedback 
+                    key={index}
+                    onPress={()=>{
+                      myGoWebView({
+                        uri: item.url
+                      })
+                    }}
+                  >
+                    <Image
+                      style={styles.bannerImage}
+                      source={{uri}}
+                      resizeMode="contain"
+                    />
+                  </TouchableWithoutFeedback>
+                )
+              })
+            }
+          </Carousel>}
+
+          {/* 金刚位1 */}
+          <View style={styles.operationContainer}>
+            <Text style={styles.operationWrapTitle}>我的订单</Text>
+            <View style={styles.operationWrap}>
+            {
+              indexData.myOrderData.map((item, index)=>{
+                const uri = getFile(item.img);
+                  return (
+                      <TouchableWithoutFeedback 
+                        key={index}
+                        onPress={()=>{
+                          myGoWebView({
+                            uri: item.url
+                          })
+                        }}
+                      >
+                        <View style={styles.operationItem}>
+                          <Image
+                            style={styles.operationImage}
+                            source={{uri}}
+                          />
+                          <Text style={styles.operationTitle}>{item.title}</Text>
+                          <Text style={styles.operationSubTitle}>{item.subtitle}</Text>
+                        </View>
+                      </TouchableWithoutFeedback>
+                  )
+                })
+              }
+            </View>
+          </View>
+
+          {/* 金刚位2 */}
+          <View style={styles.operationContainer}>
+            <View style={styles.operationWrap}>
+            {
+              indexData.myData.map((item, index)=>{
+                const uri = getFile(item.img);
+                  return (
+                      <TouchableWithoutFeedback 
+                        key={index}
+                        onPress={()=>{
+                          myGoWebView({
+                            uri: item.url
+                          })
+                        }}
+                      >
+                        <View style={styles.operationItem}>
+                          <Image
+                            style={styles.operationImage}
+                            source={{uri}}
+                          />
+                          <Text style={styles.operationTitle}>{item.title}</Text>
+                        </View>
+                      </TouchableWithoutFeedback>
+                  )
+                })
+              }
+            </View>
+          </View>
+        </View>      
       </View>
     </ScrollView>
   );
