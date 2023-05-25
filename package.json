@@ -14,16 +14,16 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@ant-design/react-native": "^5.0.2",
-    "@expo/vector-icons": "^13.0.0",
-    "@react-native-camera-roll/camera-roll": "^5.2.0",
+    "@ant-design/react-native": "~5.0.2",
+    "@expo/vector-icons": "~13.0.0",
+    "@react-native-camera-roll/camera-roll": "~5.2.0",
     "@react-native-community/segmented-control": "^2.2.2",
-    "@react-native-community/slider": "4.2.4",
+    "@react-native-community/slider": "~4.2.4",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
-    "expo": "47.0.6",
+    "expo": "~47.0.6",
     "expo-asset": "~8.7.0",
     "expo-constants": "~14.0.2",
     "expo-font": "~11.0.1",
@@ -55,7 +55,7 @@
     "jest-expo": "~47.0.1",
     "patch-package": "^6.5.1",
     "react-test-renderer": "18.1.0",
-    "typescript": "^4.6.3"
+    "typescript": "~4.6.3"
   },
   "private": true
 }
