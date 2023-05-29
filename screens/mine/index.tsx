@@ -36,9 +36,6 @@ const getFile = (key)=>{
   return assetsHost + key;
 }
 
-
-
-
 export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const [indexData, setIndexdata] = useState({
     bannerData: [],

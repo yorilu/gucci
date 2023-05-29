@@ -4,7 +4,7 @@ const Styles = StyleSheet.create({
     minHeight: '100%'
   },
   topBgWrap:{
-    width: '100%'
+    backgroundColor: '#FFF'
   },
   topBg:{
     width: '100%',
@@ -15,17 +15,18 @@ const Styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+    right: 0,
     paddingTop: 44,
     paddingBottom: 18,
     paddingHorizontal: 15,
     marginHorizontal: 15,
     backgroundColor: '#FFF',
     borderRadius: 15,
-    width: 380
   },
   topLine:{
     color: '#999',
     fontSize: 12,
+    marginBottom: 4,
     width: '100%',
     display: "flex",
     flexDirection: "row",
@@ -38,7 +39,7 @@ const Styles = StyleSheet.create({
   },
   topLineSubTitle: {
     fontSize: 12,
-    color: "#999"
+    color: "#999",
   },
   bodyWrap: {
     paddingHorizontal: 15,
@@ -49,12 +50,13 @@ const Styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(0,0,0,0)'
   },
   orderItem: {
     height: 68,
     width: '49%',
-    backgroundColor: 'rgba(0,0,0,0)'
+    backgroundColor: '#FFF'
   },
   orderItemBg:{
     width: '100%',
@@ -63,7 +65,7 @@ const Styles = StyleSheet.create({
   orderItemText:{
     position: 'absolute',
     top: 25,
-    left: 5,
+    left: 10,
     fontWeight: 'bold',
     color: '#000'
   },
@@ -81,7 +83,8 @@ const Styles = StyleSheet.create({
   operationContainer:{
     marginTop: 12,
     padding: 12,
-    borderRadius: 12
+    borderRadius: 12,
+    backgroundColor: '#FFF'
   },
   operationWrap:{
     
@@ -96,8 +99,8 @@ const Styles = StyleSheet.create({
     justifyContent: "center",
   },
   operationImage: {
-    width: 50,
-    height: 50
+    width: 32,
+    height: 32
   },
   operationTitle: {
     fontSize: 12,

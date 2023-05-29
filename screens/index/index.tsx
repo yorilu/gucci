@@ -236,6 +236,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                   }}
                 >
                   <Image
+                    key={index}
                     style={styles.bannerImage}
                     source={{uri}}
                   />
@@ -268,7 +269,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           {indexData.tags && !!indexData.tags.length && <View style={styles.tags}>
               {indexData.tags.map((item, index)=>{
                 return (
-                  <TouchableWithoutFeedback onPress={()=>{onTagClicked(index)}}>
+                  <TouchableWithoutFeedback key={index} onPress={()=>{onTagClicked(index)}}>
                     <View key={index} style={{...styles.tagWrap}} >
                       <Text style={{...styles.tagText, ...(tagSelectedIndex == index?styles.tagTextSelected:{})}}>{item.name}</Text>
                       {
