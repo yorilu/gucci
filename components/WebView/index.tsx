@@ -69,7 +69,6 @@ export default function Index(props) {
   
 
   useEffect(()=>{
-    //如果去必应鸟或者是登录操作，则去登录页面.
     if(uri.indexOf(BYN_HOST)>-1 || login === true){
       const middlePageUrl = LOGIN_PAGE.replace("{customerId}", customerId);
       setMyWebviewUri(middlePageUrl);
@@ -189,18 +188,16 @@ export default function Index(props) {
     getHanler && getHanler(webviewHandler.current);
   }
 
-  const getUserInfoByToken = async (token, customerId)=>{
+  const getUserInfoByToken = async (token)=>{
     const info = await getModels('getUserInfo').send({
       
     },{
       method: "GET",
       headers:{
-        authorization: token,
+        Authorization: token,
         customerid: customerId
       }
     })
-
-    debugger;
   }
 
   const onMessage = async (e)=>{
@@ -241,7 +238,7 @@ export default function Index(props) {
 
             debugger;
             if(data.token && data.member_id){
-              getUserInfoByToken(data.token, data.member_id);
+              getUserInfoByToken(data.token);
             }
             
             // dispatch(setToken({

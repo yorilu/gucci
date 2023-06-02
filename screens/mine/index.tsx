@@ -29,8 +29,8 @@ const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
 
 const FIRST_BANNER_SIZE = {
-  width: 750,
-  height: 300
+  width: 380,
+  height: 150
 }
 
 const {assetsHost, biyingApi, LOGIN_PAGE, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
@@ -78,8 +78,8 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
 
     goWebView({
       navigation,
-      login,
-      ...params
+      uri,
+      params
     })
   }
 
@@ -101,7 +101,7 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
     }
   }
 
-  const firstBannerCarouselHeight =  WINDOW.width / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
+  const firstBannerCarouselHeight =  (WINDOW.width - 24) / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
     <ScrollView>

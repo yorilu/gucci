@@ -56,6 +56,7 @@ const Styles = StyleSheet.create({
   },
   orderWrap:{
     marginTop: 12,
+    marginBottom: 12,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -80,7 +81,6 @@ const Styles = StyleSheet.create({
   },
   orderItemIcon: {},
   bannerCarousel:{
-    marginTop: 12,
     height: 150,
     width: 380,
     backgroundColor: "#FFF"
