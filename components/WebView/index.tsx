@@ -70,9 +70,11 @@ export default function Index(props) {
 
   useEffect(()=>{
     if(uri.indexOf(BYN_HOST)>-1 || login === true){
+      debugger;
       const middlePageUrl = LOGIN_PAGE.replace("{customerId}", customerId);
       setMyWebviewUri(middlePageUrl);
     }else{
+      debugger;
       setMyWebviewUri(uri);
     }
 

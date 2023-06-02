@@ -28,7 +28,7 @@ const FIRST_BANNER_SIZE = {
   height: 476
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL} = getEnv();
+const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, SEARCH_URL} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -129,9 +129,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
   const onSearchClicked = ({} = {})=>{
-    const uri = getUrlWithHost("mall/pages/search/index");
     myGoWebView({
-      uri
+      uri: SEARCH_URL
     })
   }
 
