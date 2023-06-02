@@ -7,6 +7,11 @@ import Navigation from './navigation';
 import Authorize from './components/Authorize'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, View } from './components/Themed';
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import rootReducer from './reducers'
+
+const store = createStore(rootReducer)
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -36,14 +41,16 @@ export default function App() {
     return null;
   } else {
     return (
-      <SafeAreaProvider>
-      { !show && <Authorize onAgree={onAgree}></Authorize>}
-      { show && <>
-          <Navigation/>
-          <StatusBar />
-        </>
-      }
-      </SafeAreaProvider>
+      <Provider store={store}>
+        <SafeAreaProvider>
+          { !show && <Authorize onAgree={onAgree}></Authorize>}
+          { show && <>
+              <Navigation/>
+              <StatusBar />
+            </>
+          }
+        </SafeAreaProvider>
+      </Provider>
     );
   }
 }

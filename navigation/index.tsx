@@ -22,7 +22,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 
 
 //theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({ colorScheme = 'light' }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}

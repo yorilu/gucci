@@ -4,7 +4,8 @@ const Styles = StyleSheet.create({
     minHeight: '100%'
   },
   topBgWrap:{
-    backgroundColor: '#FFF'
+    backgroundColor: '#FFF',
+    position: 'relative'
   },
   topBg:{
     width: '100%',
@@ -18,24 +19,32 @@ const Styles = StyleSheet.create({
     right: 0,
     paddingTop: 44,
     paddingBottom: 18,
-    paddingHorizontal: 15,
+    paddingHorizontal: 24,
     marginHorizontal: 15,
     backgroundColor: '#FFF',
     borderRadius: 15,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   topLine:{
     color: '#999',
     fontSize: 12,
     marginBottom: 4,
-    width: '100%',
     display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: 'space-between'
   },
   topLineTitle: {
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  avatar:{
+    width: 64,
+    height: 64,
+    position: 'absolute',
+    left: 24,
+    top: -32,
+    borderRadius: 32
   },
   topLineSubTitle: {
     fontSize: 12,

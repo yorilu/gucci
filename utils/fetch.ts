@@ -31,6 +31,16 @@ export default function (url, body = null, {
       }
 
       const showLog = true;
+
+      if(showLog){
+        console.log("------REQUEST START-------");
+        console.log("url",url);
+        console.log("method",method);
+        console.log("headers",headers);
+        console.log("body",body);
+        console.log("------REQUEST END-------");
+      }
+
       fetch(url, options)
       .then(response=>{
         if (response.status === 200) {
@@ -41,12 +51,7 @@ export default function (url, body = null, {
       })
       .then(response=>{
         if(showLog){
-          console.log("------REQUEST-------");
-          console.log("url",url);
-          console.log("method",method);
-          console.log("headers",headers);
-          console.log("body",body);
-          console.log("------RESPONSE-------");
+          console.log("------RESPONSE START-------");
           console.log("response",response);
           console.log("------RESPONSE END-------");
         }

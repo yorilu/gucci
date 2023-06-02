@@ -15,13 +15,15 @@ import md5 from 'js-md5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
+import { useDispatch } from 'react-redux'
+import {setToken, setUserInfo} from '../../actions'
 
 const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
 const mineIncomeIcon = require('../../assets/images/mine/mine-income.png');
 const mineOrderBg = require('../../assets/images/mine/mine-order-bg.png');
 const mineOrderIcon = require('../../assets/images/mine/mine-order.png');
-
+const headerIcon = require('../../assets/images/mine/header.png');
 
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
@@ -31,7 +33,7 @@ const FIRST_BANNER_SIZE = {
   height: 300
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
+const {assetsHost, biyingApi, LOGIN_PAGE, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -42,6 +44,8 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
     myOrderData:[],
     myData: []
   })
+
+  const userInfo = null;
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -66,14 +70,15 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
   }
 
   const myGoWebView = (params)=>{
-    const { uri } = params;
-    if(!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1){
+    const { uri = '', login } = params;
+    if((!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1) && login != true ){
       Linking.openURL(uri);
       return false;
     }
 
     goWebView({
       navigation,
+      login,
       ...params
     })
   }
@@ -104,13 +109,24 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
         {/* 顶部个人信息 */}
         <View style={styles.topBgWrap}>
           <Image source={mineBg} resizeMode="cover" resizeMethod="scale" style={styles.topBg}/>
+          
+          
           <View style={styles.headerWrap}>
+            <Image source={headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
             <View style={styles.topLine}>
-              <Text style={styles.topLineTitle}>比克</Text>
-              <Text style={styles.topLineTitle}>100</Text>
+              <TouchableWithoutFeedback 
+                onPress={()=>{
+                  myGoWebView({
+                    login: true,
+                    uri: LOGIN_PAGE
+                  })
+                }}
+              >
+                <Text style={styles.topLineTitle}>{userInfo || '暂未登录'}</Text>
+              </TouchableWithoutFeedback>
             </View>
             <View style={styles.topLine}>
-              <Text style={styles.topLineSubTitle}>15900001111</Text>
+              { userInfo && <Text style={styles.topLineTitle}>{userInfo}</Text>}
               <Text style={styles.topLineSubTitle}>优惠券<AntDesign name="right" size={12} color="#999" /></Text>
             </View>
           </View>

@@ -11,24 +11,28 @@ import { Button, Carousel } from '@ant-design/react-native';
 import * as Location from 'expo-location';
 import md5 from 'js-md5';
 import $fetch from '../../utils/fetch';
+import {setToken, setUserInfo} from '../../actions';
+import { useDispatch } from 'react-redux';
 
 import { WebView } from 'react-native-webview';
 
-const {assetsHost, customerId, BYN_MIDDLE_PAGE, biyingApi, BYN_APP_KEY, BYN_APP_SECRET} = getEnv();
+const {assetsHost, customerId, LOGIN_PAGE, biyingApi, BYN_APP_KEY, BYN_APP_SECRET} = getEnv();
 let webViewHasHistory = false;
 let isFirstLoadBynUrlFlag = false; //是否是第一次加载必应鸟连接
 let lastClickedTime = new Date();
 let bynToken = null;
 
 const BYN_HOST  = "sda4.top";
-export default function WebViewPage(props) {
+
+export default function Index(props) {
 
   console.log("webview已加载 props为:", props);
   
-  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange } = props;
+  //const dispatch = useDispatch();
+  
+  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange, login } = props;
   const webviewHandler = useRef(null);
   const [myWebviewUri, setMyWebviewUri] = useState("");
-
 
   useEffect(()=>{
     console.log("webview加载的url为：", myWebviewUri)
@@ -65,9 +69,9 @@ export default function WebViewPage(props) {
   
 
   useEffect(()=>{
-    //if(1){
-    if(uri.indexOf(BYN_HOST)>-1){
-      const middlePageUrl = BYN_MIDDLE_PAGE.replace("{customerId}", customerId);
+    //如果去必应鸟或者是登录操作，则去登录页面.
+    if(uri.indexOf(BYN_HOST)>-1 || login === true){
+      const middlePageUrl = LOGIN_PAGE.replace("{customerId}", customerId);
       setMyWebviewUri(middlePageUrl);
     }else{
       setMyWebviewUri(uri);
@@ -185,6 +189,20 @@ export default function WebViewPage(props) {
     getHanler && getHanler(webviewHandler.current);
   }
 
+  const getUserInfoByToken = async (token, customerId)=>{
+    const info = await getModels('getUserInfo').send({
+      
+    },{
+      method: "GET",
+      headers:{
+        authorization: token,
+        customerid: customerId
+      }
+    })
+
+    debugger;
+  }
+
   const onMessage = async (e)=>{
     const { nativeEvent } = e;
 
@@ -220,6 +238,16 @@ export default function WebViewPage(props) {
           //这里肯定是必应鸟链接
           if(data.member_id){
             const token = await getByToken(data.member_id);
+
+            debugger;
+            if(data.token && data.member_id){
+              getUserInfoByToken(data.token, data.member_id);
+            }
+            
+            // dispatch(setToken({
+            //   token
+            // }))
+
             console.log("必应鸟Token = ", token);
             if(!token){
               return;

@@ -34,6 +34,9 @@ const Models = {
   },
   nav: {
     api: '/app/nav'
+  },
+  getUserInfo: {
+    api: 'authCenter/user/info'
   }
 }
 

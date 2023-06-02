@@ -28,7 +28,7 @@ const FIRST_BANNER_SIZE = {
   height: 476
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, BYN_MIDDLE_PAGE, OSS_PATH, REDBAG_URL} = getEnv();
+const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -266,24 +266,26 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           </View>
 
           {/* tags */}
-          {indexData.tags && !!indexData.tags.length && <View style={styles.tags}>
-              {indexData.tags.map((item, index)=>{
-                return (
-                  <TouchableWithoutFeedback key={index} onPress={()=>{onTagClicked(index)}}>
-                    <View key={index} style={{...styles.tagWrap}} >
-                      <Text style={{...styles.tagText, ...(tagSelectedIndex == index?styles.tagTextSelected:{})}}>{item.name}</Text>
-                      {
-                        tagSelectedIndex == index && <Image
-                          style={styles.tagSelectedImg}
-                          source={tagSelectedImg}
-                          resizeMode = "contain"
-                        />
-                      }
-                    </View>
-                  </TouchableWithoutFeedback>
-                )
-              })}
-            </View>
+          {indexData.tags && !!indexData.tags.length && <ScrollView horizontal={true}>
+            <View style={styles.tags}>
+                {indexData.tags.map((item, index)=>{
+                  return (
+                    <TouchableWithoutFeedback key={index} onPress={()=>{onTagClicked(index)}}>
+                      <View key={index} style={{...styles.tagWrap}} >
+                        <Text style={{...styles.tagText, ...(tagSelectedIndex == index?styles.tagTextSelected:{})}}>{item.name}</Text>
+                        {
+                          tagSelectedIndex == index && <Image
+                            style={styles.tagSelectedImg}
+                            source={tagSelectedImg}
+                            resizeMode = "contain"
+                          />
+                        }
+                      </View>
+                    </TouchableWithoutFeedback>
+                  )
+                })}
+              </View>
+            </ScrollView>
           }
           {/* 导航-金刚位 */}
           {indexData.diamonds && !!indexData.diamonds.length && <Carousel 
@@ -369,7 +371,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
                 <TouchableWithoutFeedback 
                   key={index}
                   onPress={()=>{
-                    const uri = getUrlWithHost(`mall/pages/detail/index?id=${item.id}`)
+                    const uri = item.url;
                     myGoWebView({
                       uri
                     })
