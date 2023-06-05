@@ -28,9 +28,9 @@ export default function Index(props) {
 
   console.log("webview已加载 props为:", props);
   
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   
-  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange, login } = props;
+  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange, isLogin} = props;
   const webviewHandler = useRef(null);
   const [myWebviewUri, setMyWebviewUri] = useState("");
 
@@ -69,12 +69,10 @@ export default function Index(props) {
   
 
   useEffect(()=>{
-    if(uri.indexOf(BYN_HOST)>-1 || login === true){
-      debugger;
-      const middlePageUrl = LOGIN_PAGE.replace("{customerId}", customerId);
-      setMyWebviewUri(middlePageUrl);
+    if(uri.indexOf(BYN_HOST)>-1 || isLogin === true){
+      const loginPage = LOGIN_PAGE.replace("{customerId}", customerId);
+      setMyWebviewUri(loginPage);
     }else{
-      debugger;
       setMyWebviewUri(uri);
     }
 
@@ -192,14 +190,22 @@ export default function Index(props) {
 
   const getUserInfoByToken = async (token)=>{
     const info = await getModels('getUserInfo').send({
-      
+    
     },{
       method: "GET",
       headers:{
-        Authorization: token,
-        customerid: customerId
+        authorization: 'Bearer ' + token,
+        customerid: customerId,
+        accept: "application/json",
+        "cache-control": "no-cache"
       }
     })
+
+    if(info.success){
+      return info.data;
+    }
+
+    return null;
   }
 
   const onMessage = async (e)=>{
@@ -234,18 +240,17 @@ export default function Index(props) {
           // webviewHandler.postMessage(message);
           break;
         case 'message':
-          //这里肯定是必应鸟链接
-          if(data.member_id){
-            const token = await getByToken(data.member_id);
-
-            debugger;
+          if(isLogin){
             if(data.token && data.member_id){
-              getUserInfoByToken(data.token);
+              const userInfo = await getUserInfoByToken(data.token);
+              dispatch(setUserInfo({
+                userInfo
+              }))
+              navigation.goBack();
             }
-            
-            // dispatch(setToken({
-            //   token
-            // }))
+          }else{
+            //这里肯定是必应鸟链接
+            const token = await getByToken(data.member_id);
 
             console.log("必应鸟Token = ", token);
             if(!token){
@@ -262,6 +267,8 @@ export default function Index(props) {
 
             setMyWebviewUri(bynUri);
           }
+
+          
         case 'navigationStateChange':
           webViewHasHistory = nativeEvent.canGoBack;
           break;

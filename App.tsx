@@ -10,13 +10,15 @@ import { Text, View } from './components/Themed';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import rootReducer from './reducers'
+import Utils from './utils'
+import CONSTS from './constants'
+import {setToken, setUserInfo} from './actions'
 
 const store = createStore(rootReducer)
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-
 
   const onAgree = async()=>{
     const authorize = await AsyncStorage.setItem('Authorize', "1");
@@ -31,6 +33,11 @@ export default function App() {
       if(authorize == 1){
         setShow(true)
       }
+
+      const userInfo = await Utils.getStorage(CONSTS.USER_INFO);
+      store.dispatch(setUserInfo({
+        userInfo
+      }))
     }
 
     init();

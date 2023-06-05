@@ -8,7 +8,7 @@ import $fetch from '../utils/fetch';
 import getEnv from '../constants/ENV'
 import Utils from '../utils/'
 
-const {api:apiUrl, customerId=''} = getEnv();
+const {api: apiUrl, customerId='', host: hostUrl} = getEnv();
 
 const Models = {
   // querySceneConfig: {
@@ -36,13 +36,14 @@ const Models = {
     api: '/app/nav'
   },
   getUserInfo: {
-    api: 'authCenter/user/info'
+    api: 'api/authCenter/user/info',
+    isHostUrl: true
   }
 }
 
 export default function(modelName){
   const config = Models[modelName];
-  const url = apiUrl + config.api + "/?_t=" + Date.now();
+  const url = (config.isHostUrl? hostUrl : apiUrl) + config.api + "?_t=" + Date.now();
   console.log("===api send===", url);
   return {
     send:(body = {}, options = {})=>{

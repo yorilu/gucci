@@ -15,8 +15,8 @@ import md5 from 'js-md5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
-import { useDispatch } from 'react-redux'
-import {setToken, setUserInfo} from '../../actions'
+import { useDispatch, useSelector } from 'react-redux';
+import {setToken, setUserInfo} from '../../actions';
 
 const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
@@ -34,6 +34,7 @@ const FIRST_BANNER_SIZE = {
 }
 
 const {assetsHost, biyingApi, LOGIN_PAGE, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
+
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -45,8 +46,9 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
     myData: []
   })
 
-  const userInfo = null;
+  const dispatch = useDispatch();
 
+  const {userInfo} = useSelector(state => state.app);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log("======focus======")
@@ -70,8 +72,8 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
   }
 
   const myGoWebView = (params)=>{
-    const { uri = '', login } = params;
-    if((!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1) && login != true ){
+    const { uri = '', isLogin } = params;
+    if((!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1) && isLogin != true ){
       Linking.openURL(uri);
       return false;
     }
@@ -101,6 +103,12 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
     }
   }
 
+  const quit = ()=>{
+    dispatch(setUserInfo({
+      userInfo: null
+    }))
+  }
+
   const firstBannerCarouselHeight =  (WINDOW.width - 24) / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
@@ -112,21 +120,21 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
           
           
           <View style={styles.headerWrap}>
-            <Image source={headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
+            <Image source={!!userInfo && userInfo.avator || headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
             <View style={styles.topLine}>
               <TouchableWithoutFeedback 
                 onPress={()=>{
                   myGoWebView({
-                    login: true,
+                    isLogin: true,
                     uri: LOGIN_PAGE
                   })
                 }}
               >
-                <Text style={styles.topLineTitle}>{userInfo || '暂未登录'}</Text>
+                <Text style={styles.topLineTitle}>{!!userInfo && userInfo.mobile || '暂未登录'}</Text>
               </TouchableWithoutFeedback>
             </View>
             <View style={styles.topLine}>
-              { userInfo && <Text style={styles.topLineTitle}>{userInfo}</Text>}
+              { !!userInfo && <Text style={styles.topLineTitle}>{!!userInfo || '无优惠券'}</Text>}
               <Text style={styles.topLineSubTitle}>优惠券<AntDesign name="right" size={12} color="#999" /></Text>
             </View>
           </View>
@@ -252,8 +260,20 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
               }
             </View>
           </View>
-        </View>      
-      </View>
+          {/* 退出 */}
+          {
+            !!userInfo && <TouchableWithoutFeedback 
+              onPress={()=>{
+                quit();
+              }}
+            >
+              <View style={styles.quitWrap}>
+                <Text>退出</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          }
+        </View>    
+      </View> 
     </ScrollView>
   );
 }

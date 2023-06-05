@@ -1,4 +1,5 @@
 import getEnv from '../constants/ENV'
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 const { host, customerId } = getEnv();
 const Utils = {
@@ -25,6 +26,30 @@ const Utils = {
     // }
     console.log("goWebView uri", uri, params,)
     navigation.push("WebView", {uri, ...params})
+  },
+  getStorage: async (key)=>{
+    try {
+      let value = await AsyncStorage.getItem(key) || null;
+      value = JSON.parse(value);
+      if (value) {
+        return value;
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  
+    return null;
+  },
+  setStorage: async (key= '', value= '') => {
+    try {
+      value = JSON.stringify(value);
+      await AsyncStorage.setItem(
+        key,
+        value,
+      );
+    } catch (error) {
+      // Error saving data
+    }
   }
 }
 

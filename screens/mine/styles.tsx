@@ -120,6 +120,16 @@ const Styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 16
+  },
+  quitWrap:{
+    paddingVertical: 12,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#FFF",
+    color: '#333',
+    borderRadius: 12,
+    marginTop: 12
   }
 });
 
