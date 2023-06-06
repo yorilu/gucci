@@ -17,6 +17,7 @@ import moment from 'moment'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
 import { useDispatch, useSelector } from 'react-redux';
 import {setToken, setUserInfo} from '../../actions';
+import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 
 const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
@@ -24,6 +25,8 @@ const mineIncomeIcon = require('../../assets/images/mine/mine-income.png');
 const mineOrderBg = require('../../assets/images/mine/mine-order-bg.png');
 const mineOrderIcon = require('../../assets/images/mine/mine-order.png');
 const headerIcon = require('../../assets/images/mine/header.png');
+const kefuIcon = require('../../assets/images/mine/kefu.png');
+const otherIcon = require('../../assets/images/mine/other.png');
 
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
@@ -33,7 +36,7 @@ const FIRST_BANNER_SIZE = {
   height: 150
 }
 
-const {assetsHost, biyingApi, LOGIN_PAGE, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
+const {assetsHost, biyingApi, LOGIN_PAGE, BYN_APP_KEY, CUSTOMER_SERVICE, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, FANLI_URL, OTHER_FANLI_URL} = getEnv();
 
 const getFile = (key)=>{
   return assetsHost + key;
@@ -109,6 +112,10 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
     }))
   }
 
+  const goAbout = ()=>{
+    navigation.push("About")
+  }
+
   const firstBannerCarouselHeight =  (WINDOW.width - 24) / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
@@ -118,7 +125,25 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
         <View style={styles.topBgWrap}>
           <Image source={mineBg} resizeMode="cover" resizeMethod="scale" style={styles.topBg}/>
           
-          
+          <View style={styles.topIconsWrap}>
+            <TouchableWithoutFeedback 
+                onPress={()=>{
+                  myGoWebView({
+                    uri: CUSTOMER_SERVICE
+                  })
+                }}
+              >
+              <Image source={kefuIcon} resizeMode="contain" resizeMethod="scale" style={{...styles.topIcon, ...styles.kefuIcon}}/>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback 
+                onPress={()=>{
+                  goAbout();
+                }}
+              >
+              <Image source={otherIcon} resizeMode="contain" resizeMethod="scale" style={styles.topIcon}/>
+            </TouchableWithoutFeedback>
+          </View>
+
           <View style={styles.headerWrap}>
             <Image source={!!userInfo && userInfo.avator || headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
             <View style={styles.topLine}>

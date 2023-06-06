@@ -14,9 +14,10 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/index/index';
-import TabFourScreen from '../screens/mine/index';
+import IndexScreen from '../screens/index/index';
+import MineScreen from '../screens/mine/index';
 import WebViewScreen from '../screens/webview/index'
+import AboutScreen from '../screens/about/index'
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -43,6 +44,7 @@ function RootNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name="About" component={AboutScreen} options={{ title: '关于我们' }} />
       <Stack.Screen name="WebView" component={WebViewScreen} options={{ title: '' }} />
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -68,7 +70,7 @@ function BottomTabNavigator() {
       }}>
       <BottomTab.Screen
         name=" "
-        component={TabOneScreen}
+        component={IndexScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           tabBarLabel: '首页',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} size={26}/>,
@@ -106,7 +108,7 @@ function BottomTabNavigator() {
       />*/}
       <BottomTab.Screen
         name="我的"
-        component={TabFourScreen}
+        component={MineScreen}
         options={{
           tabBarLabel: '我的',
           tabBarIcon: ({ color }) => <AntDesign name="user" color={color}  size={26}/>,

@@ -65,7 +65,9 @@ const COMMOON = {
   SEARCH_URL: "https://46mkls.sda4.top/x/search/center?app_key=ejdwle",
   FANLI_URL:       'https://46mkls.sda4.top/user/order/rebate?app_key=ejdwle&invite_code=ABLK3Q3',//返利订单收益 
   OTHER_FANLI_URL: "https://46mkls.sda4.top/user/reports?app_key=ejdwle&invite_code=ABLK3Q3", //其他收益
-  CUSTOMER_SERVICE: 'https://ykf-webchat.7moor.com/wapchat.html?accessId=ed9fc0c0-b1ff-11ed-beac-754ca03d506d&fromUrl=&urlTitle=APP&language=ZHCN&otherParams={"agent":"8000","peerId":"10058789"}'
+  CUSTOMER_SERVICE: 'https://ykf-webchat.7moor.com/wapchat.html?accessId=ed9fc0c0-b1ff-11ed-beac-754ca03d506d&fromUrl=&urlTitle=APP&language=ZHCN&otherParams={"agent":"8000","peerId":"10058789"}',
+  YSZC_URL: 'https://interests-m.shanghaibinyu.top/mall/pages/agreement/index?id=1628719898564857858&customerId=1553282691992756226',
+  YHXY_URL: 'https://interests-m.shanghaibinyu.top/mall/pages/agreement/index?id=1628719677810249730&customerId=1553282691992756226'
 }
 
 export default function(){

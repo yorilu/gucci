@@ -7,6 +7,23 @@ const Styles = StyleSheet.create({
     backgroundColor: '#FFF',
     position: 'relative'
   },
+  topIconsWrap:{
+    position: 'absolute',
+    right: 0,
+    top: 12,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,0,0,0)'
+  },
+  topIcon:{
+    width: 32,
+    height: 32,
+    marginRight: 15
+  },
+  kefuIcon:{
+    marginRight: 12
+  },
   topBg:{
     width: '100%',
     height: 200,
