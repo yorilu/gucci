@@ -18,7 +18,6 @@ const store = createStore(rootReducer)
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
 
   const onAgree = async()=>{
     const authorize = await AsyncStorage.setItem('Authorize', "1");
@@ -27,6 +26,7 @@ export default function App() {
 
   const [show, setShow] = useState(false);
   useEffect(()=>{
+
     const init = async ()=>{
       const authorize = await AsyncStorage.getItem('Authorize');
       console.log("当前authorize状态:", authorize)
