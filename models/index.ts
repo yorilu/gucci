@@ -8,7 +8,7 @@ import $fetch from '../utils/fetch';
 import getEnv from '../constants/ENV'
 import Utils from '../utils/'
 
-const {api: apiUrl, customerId='', host: hostUrl} = getEnv();
+const {api: apiUrl, customerId='', host: hostUrl, billbearApi} = getEnv();
 
 const Models = {
   // querySceneConfig: {
@@ -38,12 +38,27 @@ const Models = {
   getUserInfo: {
     api: 'api/authCenter/user/info',
     isHostUrl: true
+  },
+  getCurrentMemberMobile:{
+    api: 'usercenter/admin/member/getCurrentMemberMobile',
+    isBillbearApi: true
   }
 }
 
 export default function(modelName){
   const config = Models[modelName];
-  const url = (config.isHostUrl? hostUrl : apiUrl) + config.api + "?_t=" + Date.now();
+  let url = (config.isHostUrl? hostUrl : apiUrl) + config.api + "?_t=" + Date.now();
+
+  if(config.isHostUrl){
+    url = hostUrl;
+  }else if(config.isBillbearApi){
+    url = billbearApi  
+  }else{
+    url = apiUrl;
+  }
+
+  url += config.api + "?_t=" + Date.now();
+  
   console.log("===api send===", url);
   return {
     send:(body = {}, options = {})=>{

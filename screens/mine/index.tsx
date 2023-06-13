@@ -149,6 +149,7 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
             <View style={styles.topLine}>
               <TouchableWithoutFeedback 
                 onPress={()=>{
+                  if(userInfo) return;
                   myGoWebView({
                     isLogin: true,
                     uri: LOGIN_PAGE

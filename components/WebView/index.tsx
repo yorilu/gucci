@@ -12,7 +12,7 @@ import * as Location from 'expo-location';
 import md5 from 'js-md5';
 import $fetch from '../../utils/fetch';
 import {setToken, setUserInfo} from '../../actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 
 import { WebView } from 'react-native-webview';
 
@@ -32,7 +32,9 @@ export default function Index(props) {
   
   const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange, isLogin} = props;
   const webviewHandler = useRef(null);
+  const isBYNUrl = uri.indexOf(BYN_HOST)>-1;//是否是必应鸟连接
   const [myWebviewUri, setMyWebviewUri] = useState("");
+  const {userInfo, mobile} = useSelector(state => state.app);
 
   useEffect(()=>{
     console.log("webview加载的url为：", myWebviewUri)
@@ -69,13 +71,35 @@ export default function Index(props) {
   
 
   useEffect(()=>{
-    if(uri.indexOf(BYN_HOST)>-1 || isLogin === true){
-      const loginPage = LOGIN_PAGE.replace("{customerId}", customerId);
-      setMyWebviewUri(loginPage);
-    }else{
-      setMyWebviewUri(uri);
+    //(uri.includes("{phone}") || uri.includes("{user_id}"))
+
+    let url = uri;
+    let loginPage = LOGIN_PAGE.replace("{customerId}", customerId);
+    let needLogin = isLogin;
+
+    //如果连接中含有{mobile}，并且没登录，则去登录
+    if(!userInfo && url.includes('{phone}')){
+      needLogin = true;
     }
 
+    //替换对应的字段。
+    if(url.includes('{phone}') && userInfo?.realMobile){
+      url = url.replace('{phone}', userInfo.realMobile);
+    }
+
+    if(url.includes('{user_id}') && userInfo?.id){
+      url = url.replace('{user_id}', userInfo.id);
+    }
+
+    //如果是登录，则必须清除h5的缓存
+    if(needLogin){
+      loginPage += '&cleanCache=1'
+      setMyWebviewUri(loginPage);
+    }else if(isBYNUrl){
+      setMyWebviewUri(loginPage);
+    }else{
+      setMyWebviewUri(url);
+    }
 
     navigation.addListener('beforeRemove', (e) => {
       console.log("beforeRemove webViewHasHistory", webViewHasHistory);
@@ -208,6 +232,26 @@ export default function Index(props) {
     return null;
   }
 
+  const getMobileByToken = async (token)=>{
+    const info = await getModels('getCurrentMemberMobile').send({
+    
+    },{
+      method: "GET",
+      headers:{
+        authorization: 'Bearer ' + token,
+        customerid: customerId,
+        accept: "application/json",
+        "cache-control": "no-cache"
+      }
+    })
+
+    if(info.success){
+      return info.data.mobile;
+    }
+
+    return null;
+  }
+
   const onMessage = async (e)=>{
     const { nativeEvent } = e;
 
@@ -240,16 +284,21 @@ export default function Index(props) {
           // webviewHandler.postMessage(message);
           break;
         case 'message':
+
+          if(data.token && data.member_id && !userInfo){
+            let userInfoData = await getUserInfoByToken(data.token);
+            const mobileData = await getMobileByToken(data.token);
+            userInfoData.realMobile = mobileData;
+            dispatch(setUserInfo({
+              userInfo: userInfoData,
+            }))
+          }
+
           if(isLogin){
-            if(data.token && data.member_id){
-              const userInfo = await getUserInfoByToken(data.token);
-              dispatch(setUserInfo({
-                userInfo
-              }))
-              navigation.goBack();
-            }
-          }else{
-            //这里肯定是必应鸟链接
+            //如果是登录
+            navigation.navigate('我的');
+          }else if(isBYNUrl){
+            //必应鸟链接
             const token = await getByToken(data.member_id);
 
             console.log("必应鸟Token = ", token);
@@ -268,7 +317,7 @@ export default function Index(props) {
             setMyWebviewUri(bynUri);
           }
 
-          
+          break;
         case 'navigationStateChange':
           webViewHasHistory = nativeEvent.canGoBack;
           break;

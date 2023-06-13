@@ -259,9 +259,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             <TouchableWithoutFeedback onPress={onSearchClicked}>
               <Text style={styles.searchText}>输入关键词进行搜索</Text>
             </TouchableWithoutFeedback>
-            <View style={styles.searchBtn}>
-              <Text style={styles.searchBtnText}>搜商品</Text>
-            </View>
+            <TouchableWithoutFeedback onPress={onSearchClicked}>
+              <View style={styles.searchBtn}>
+                <Text style={styles.searchBtnText}>搜商品</Text>
+              </View>
+              </TouchableWithoutFeedback>
           </View>
 
           {/* tags */}

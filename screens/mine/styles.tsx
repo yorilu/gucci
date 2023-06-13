@@ -1,7 +1,9 @@
 import { StyleSheet } from 'react-native';
 const Styles = StyleSheet.create({
   container: {
-    minHeight: '100%'
+    minHeight: '100%',
+    paddingBottom: 30,
+    backgroundColor: '#F8F9FB'
   },
   topBgWrap:{
     backgroundColor: '#FFF',
@@ -99,7 +101,6 @@ const Styles = StyleSheet.create({
   orderItemIcon: {},
   bannerCarousel:{
     height: 150,
-    width: 380,
     backgroundColor: "#FFF"
   },
   bannerImage:{

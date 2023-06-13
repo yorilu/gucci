@@ -35,6 +35,7 @@ export default function App() {
       }
 
       const userInfo = await Utils.getStorage(CONSTS.USER_INFO);
+      console.log("====userInfo from app cache=====", userInfo);
       store.dispatch(setUserInfo({
         userInfo
       }))

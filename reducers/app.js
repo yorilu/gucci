@@ -4,6 +4,7 @@ import Utils from '../utils'
 const INITIAL_STATE = {
   token: null,
   userInfo: null,
+  mobile: '',
   tempMemberId: ''
 }
 

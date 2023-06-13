@@ -5,6 +5,7 @@ const CONFIG = {
   dev: {
     env,
     api: "https://huafei-dev.billbear.vip",
+    billbearApi: 'https://interests-m-dev.billbear.vip/api/',
     assetsHost: "http://ka-img-dev.billbear.cn/",
     host: "https://interests-m-dev.billbear.vip/",
     customerId: "1579784156951166977",
@@ -19,6 +20,7 @@ const CONFIG = {
   test: {
     env,
     api: "https://huafei-test.billbear.vip",
+    billbearApi: 'https://interests-m-test.billbear.vip/api/',
     assetsHost: "https://huafei-test.billbear.vip",
     host: "https://interests-m-test.billbear.vip/",
     customerId: "1500708711805132802",
@@ -33,6 +35,7 @@ const CONFIG = {
   prev: {
     env,
     api: "https://interests-m-prev.billbear.vip/api/",
+    billbearApi: 'https://interests-m-prev.billbear.vip/api/',
     assetsHost: "http://ka-img-dev.billbear.cn/",
     host: "https://interests-m-prev.billbear.vip/",
     customerId: "1579784156951166977",
@@ -47,6 +50,7 @@ const CONFIG = {
   prod: {
     env,
     api: "https://interests-m.billbear.vip/api/",
+    billbearApi: 'https://interests-m-prod.billbear.vip/api/',
     assetsHost: "https://ka-img-dev.billbear.cn/",
     host: "https://interests-m.shanghaibinyu.top/",
     customerId: "1553282691992756226",
