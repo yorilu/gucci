@@ -67,14 +67,18 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     
   }, [tagSelectedIndex]);
 
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log("======focus======")
-      init();
-    });
+  // React.useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     console.log("======focus======")
+  //     init();
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
+
+  React.useEffect(() => {
+    init();
+  }, []);
 
   const getDiamondsData = async (category)=>{
     let diamonds = await queryData({category, position: 1, modelName:'diamond'});
@@ -111,21 +115,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       goods
     })
 
-    try{
-      const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
-        method: "GET"
-      }) || {};
+    // try{
+    //   const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
+    //     method: "GET"
+    //   }) || {};
 
-      const value = await AsyncStorage.getItem(TODAY);
+    //   const value = await AsyncStorage.getItem(TODAY);
 
-      if(info.showRedBag && !value){
-        setShowRedBag(true);
-        AsyncStorage.setItem(TODAY, "1");
-      }
-    }catch(e){
-      console.log(e);
-    }
-
+    //   if(info.showRedBag && !value){
+    //     setShowRedBag(true);
+    //     AsyncStorage.setItem(TODAY, "1");
+    //   }
+    // }catch(e){
+    //   console.log(e);
+    // }
   }
 
   const onSearchClicked = ({} = {})=>{
@@ -136,6 +139,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
   const myGoWebView = (params)=>{
     const { uri } = params;
+    if(!uri){
+      return;
+    }
     if(!uri.startsWith("http") || uri.indexOf("alipay")>-1 || uri.indexOf("weixin")>-1){
       Linking.openURL(uri);
       return false;

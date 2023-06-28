@@ -69,6 +69,20 @@ export default function Index(props) {
     return bynToken;
   }
   
+  
+  const getReplacedUrl = (url, info = {})=>{
+    let myUserInfo = userInfo || info;
+    //替换对应的字段。
+    if(url.includes('{phone}') && myUserInfo?.realMobile){
+      url = url.replace('{phone}', myUserInfo.realMobile);
+    }
+
+    if(url.includes('{user_id}') && myUserInfo?.id){
+      url = url.replace('{user_id}', myUserInfo.id);
+    }
+
+    return url;
+  }
 
   useEffect(()=>{
     //(uri.includes("{phone}") || uri.includes("{user_id}"))
@@ -82,14 +96,7 @@ export default function Index(props) {
       needLogin = true;
     }
 
-    //替换对应的字段。
-    if(url.includes('{phone}') && userInfo?.realMobile){
-      url = url.replace('{phone}', userInfo.realMobile);
-    }
-
-    if(url.includes('{user_id}') && userInfo?.id){
-      url = url.replace('{user_id}', userInfo.id);
-    }
+    url = getReplacedUrl(url);
 
     //如果是登录，则必须清除h5的缓存
     if(needLogin){
@@ -260,6 +267,7 @@ export default function Index(props) {
       console.log("Webview onMessage", jsonData);
 
       const {type = '', data = {}} = jsonData;
+      let userInfoData = {};
 
       switch(type){
         case 'switchTab':  
@@ -286,7 +294,7 @@ export default function Index(props) {
         case 'message':
 
           if(data.token && data.member_id && !userInfo){
-            let userInfoData = await getUserInfoByToken(data.token);
+            userInfoData = await getUserInfoByToken(data.token);
             const mobileData = await getMobileByToken(data.token);
             userInfoData.realMobile = mobileData;
             dispatch(setUserInfo({
@@ -315,6 +323,9 @@ export default function Index(props) {
             isFirstLoadBynUrlFlag = true;
 
             setMyWebviewUri(bynUri);
+          }else{
+            let myUri = getReplacedUrl(uri, userInfoData);
+            setMyWebviewUri(myUri);
           }
 
           break;
