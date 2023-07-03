@@ -66,12 +66,15 @@ function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="TabOne"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: Colors[colorScheme].tint
       }}>
       <BottomTab.Screen
         name=" "
         component={IndexScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
+          headerStyle: {
+            height: 0
+          },
           tabBarLabel: '首页',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} size={26}/>,
           // headerRight: () => (
@@ -110,6 +113,9 @@ function BottomTabNavigator() {
         name="我的"
         component={MineScreen}
         options={{
+          headerStyle: {
+            height: 0
+          },
           tabBarLabel: '我的',
           tabBarIcon: ({ color }) => <AntDesign name="user" color={color}  size={26}/>,
         }}
