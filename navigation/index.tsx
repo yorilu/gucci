@@ -69,7 +69,7 @@ function BottomTabNavigator() {
         tabBarActiveTintColor: Colors[colorScheme].tint
       }}>
       <BottomTab.Screen
-        name=" "
+        name="Index"
         component={IndexScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           headerStyle: {
@@ -110,7 +110,7 @@ function BottomTabNavigator() {
         }}
       />*/}
       <BottomTab.Screen
-        name="我的"
+        name="Mine"
         component={MineScreen}
         options={{
           headerStyle: {

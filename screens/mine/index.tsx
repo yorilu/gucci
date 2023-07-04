@@ -1,4 +1,4 @@
-import { Image , ScrollView, Linking, TouchableWithoutFeedback, Dimensions, ImageBackground} from 'react-native';
+import { Image , ScrollView, Linking, TouchableWithoutFeedback, Dimensions, ImageBackground, Alert} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import styles from './styles'
 
@@ -107,9 +107,22 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
   }
 
   const quit = ()=>{
-    dispatch(setUserInfo({
-      userInfo: null
-    }))
+    Alert.alert(
+      '退出',
+      '退出后不能查看订单，确认退出吗？',
+      [{
+        text: '取消'
+      },
+      {
+        text: '确定',
+        onPress: ()=>{
+          dispatch(setUserInfo({
+            userInfo: null
+          }))
+          navigation.navigate("Index")
+        }
+      },]
+    )
   }
 
   const goAbout = ()=>{

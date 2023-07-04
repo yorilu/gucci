@@ -308,7 +308,7 @@ export default function Index(props) {
 
           if(isLogin){
             //如果是登录
-            navigation.navigate('我的');
+            navigation.navigate('Mine');
           }else if(isBYNUrl){
             //必应鸟链接
             const token = await getByToken(data.member_id);
