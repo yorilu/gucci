@@ -105,6 +105,10 @@ export default function Index(props) {
     }else if(isBYNUrl){
       setMyWebviewUri(loginPage);
     }else{
+      //如果没有登录，则一定是需要先登录.
+      if(!userInfo){
+        url += "&&cleanCache=1"
+      }
       setMyWebviewUri(url);
     }
 

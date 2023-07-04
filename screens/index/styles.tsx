@@ -11,7 +11,7 @@ const Styles = StyleSheet.create({
   redGifClose: {
     position: "relative",
     left: 140,
-    top: 10,
+    top: 0,
     color: '#FFF',
     padding: 10
   },
@@ -45,7 +45,7 @@ const Styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "80%",
+    height: "100%",
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',

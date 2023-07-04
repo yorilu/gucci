@@ -15,6 +15,7 @@ import md5 from 'js-md5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
+import { useDispatch, useSelector } from 'react-redux';
 
 const TODAY = moment().format("YYYY_MM_DD");
 const redGif = require('../../assets/images/red.gif');
@@ -28,7 +29,7 @@ const FIRST_BANNER_SIZE = {
   height: 476
 }
 
-const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, SEARCH_URL} = getEnv();
+const {assetsHost, biyingApi, BYN_APP_KEY, BYN_APP_SECRET, customerId, OSS_PATH, REDBAG_URL, SEARCH_URL, DIALOG_PIC_PATH} = getEnv();
 const getFile = (key)=>{
   return assetsHost + key;
 }
@@ -38,9 +39,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [secondBannerData, setSecondBannerData] = useState([]);
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
-  const [showRedBag, setShowRedBag] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagSelectedIndex, setTagSelectedIndex] = useState(0);
+  const [dialogInfo, setDialogInfo] = useState({});
 
   const [indexData, setIndexdata] = useState({
     firstBannerData: [],
@@ -49,6 +51,8 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     goods: [],
     tags: []
   })
+
+  const {userInfo, mobile} = useSelector(state => state.app);
 
   React.useEffect(() => {
 
@@ -114,6 +118,24 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       tags,
       goods
     })
+
+    let userId = userInfo?.id || await AsyncStorage.getItem("TEMP_USER_ID");
+    if(!userId){
+      userId = Math.floor(Math.random()*1000000);
+      AsyncStorage.setItem("TEMP_USER_ID", userId);
+    }
+
+    const advertInfo = await getModels('advert').send({
+      user_id: userId,
+      position: 2
+    },{
+      method: "GET"
+    })
+
+    if(advertInfo?.code ==0){
+      setDialogInfo(advertInfo.result);
+      setShowDialog(true);
+    }
 
     // try{
     //   const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
@@ -198,16 +220,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     }
   }
 
-  const onRedBagClicked = ()=>{
-    setShowRedBag(false);
-    myGoWebView({
-      uri: REDBAG_URL
-    })
-  }
 
-
-  const onRedBagClose = ()=>{
-    setShowRedBag(false);
+  const onDialogClose = ()=>{
+    setShowDialog(false);
   }
 
   const onTagClicked = (index)=>{
@@ -215,7 +230,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
   const firstBannerCarouselHeight =  WINDOW.width / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
-
+  const dialogImgUrl = (DIALOG_PIC_PATH + dialogInfo.img) || '';
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -403,15 +418,20 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       </View>
 
       {
-        showRedBag && <View style={styles.redModal}>
-          <TouchableWithoutFeedback onPress={onRedBagClose}>
+        showDialog && <View style={styles.redModal}>
+          <TouchableWithoutFeedback onPress={onDialogClose}>
             <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={onRedBagClicked}>
+          <TouchableWithoutFeedback onPress={()=>{
+            setShowDialog(false);
+            myGoWebView({
+              uri: dialogInfo.url
+            })
+          }}>
             <Image
               resizeMode={'cover'}
               style={styles.redGif}
-              source={redGif}
+              source={{uri:dialogImgUrl}}
             />
           </TouchableWithoutFeedback>
 

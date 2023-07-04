@@ -42,6 +42,9 @@ const Models = {
   getCurrentMemberMobile:{
     api: 'usercenter/admin/member/getCurrentMemberMobile',
     isBillbearApi: true
+  },
+  advert: {
+    api: '/app/advert'
   }
 }
 

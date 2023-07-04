@@ -15,7 +15,8 @@ const CONFIG = {
     LOGIN_PAGE: "https://interests-m-dev.billbear.vip/mall/pages/app-middle/index/?customerId={customerId}",
     TELE_BILL_URL: "https://interests-m-test.billbear.vip/recharge-center/pages/order/index",
     OSS_PATH: "https://gucci-app.oss-cn-shanghai.aliyuncs.com",
-    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023"
+    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023",
+    DIALOG_PIC_PATH: 'https://huafei-test.billbear.vip'
   },
   test: {
     env,
@@ -30,7 +31,8 @@ const CONFIG = {
     LOGIN_PAGE: "https://interests-m-test.billbear.vip/mall/pages/app-middle/index/?customerId={customerId}",
     TELE_BILL_URL: "https://interests-m-test.billbear.vip/recharge-center/pages/order/index",
     OSS_PATH: "https://gucci-app.oss-cn-shanghai.aliyuncs.com",
-    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023"
+    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023",
+    DIALOG_PIC_PATH: 'https://huafei-test.billbear.vip'
   },
   prev: {
     env,
@@ -45,7 +47,8 @@ const CONFIG = {
     LOGIN_PAGE: "https://interests-m-prev.billbear.vip/mall/pages/app-middle/index/?customerId={customerId}",
     TELE_BILL_URL: "https://interests-m.shanghaibinyu.top/recharge-center/pages/order/index",
     OSS_PATH: "https://gucci-app.oss-cn-shanghai.aliyuncs.com",
-    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023"
+    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023",
+    DIALOG_PIC_PATH: 'https://phone.shanghaibinyu.top'
   },
   prod: {
     env,
@@ -61,7 +64,8 @@ const CONFIG = {
     TELE_BILL_URL: "https://interests-m.shanghaibinyu.top/recharge-center/pages/order/index",
     
     OSS_PATH: "https://gucci-app.oss-cn-shanghai.aliyuncs.com",
-    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023"
+    REDBAG_URL: "https://engine.tuifish.com/index/activity?appKey=46e6cizaFQyQPGuuxK1wvSvCpTV3&adslotId=444023",
+    DIALOG_PIC_PATH: 'https://phone.shanghaibinyu.top'
   }
 }
 
