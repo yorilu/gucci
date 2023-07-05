@@ -85,7 +85,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }, []);
 
   const getDiamondsData = async (category)=>{
-    let diamonds = await queryData({category, position: 1, modelName:'diamond'});
+    let params = {category, position: 1, modelName:'diamond'};
+    if(category == 1){
+      params.ishot = 1;
+    }
+    let diamonds = await queryData(params);
 
     let formatData = [];
     diamonds?.map((item, index)=>{

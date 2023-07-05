@@ -41,33 +41,31 @@ export default function Index({ navigation }: RootTabScreenProps<'TabOne'>) {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TouchableWithoutFeedback 
-            onPress={()=>{
-              myGoWebView({
-                uri: YSZC_URL
-              })
-            }}
-          >
-          <View style={styles.block}>
-            <Text>隐私政策</Text>
-            <AntDesign name="right" size={16} color="black" />
-          </View>
-        </TouchableWithoutFeedback> 
-        <TouchableWithoutFeedback 
-            onPress={()=>{
-              myGoWebView({
-                uri: YHXY_URL
-              })
-            }}
-          >
-          <View style={styles.block}>
-            <Text>用户协议</Text>
-            <AntDesign name="right" size={16} color="black" />
-          </View>
-        </TouchableWithoutFeedback> 
-      </View> 
-    </ScrollView>
+    <View style={styles.container}>
+      <TouchableWithoutFeedback 
+          onPress={()=>{
+            myGoWebView({
+              uri: YSZC_URL
+            })
+          }}
+        >
+        <View style={styles.block}>
+          <Text>隐私政策</Text>
+          <AntDesign name="right" size={16} color="black" />
+        </View>
+      </TouchableWithoutFeedback> 
+      <TouchableWithoutFeedback 
+          onPress={()=>{
+            myGoWebView({
+              uri: YHXY_URL
+            })
+          }}
+        >
+        <View style={styles.block}>
+          <Text>用户协议</Text>
+          <AntDesign name="right" size={16} color="black" />
+        </View>
+      </TouchableWithoutFeedback> 
+    </View> 
   );
 }

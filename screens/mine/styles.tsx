@@ -15,7 +15,7 @@ const Styles = StyleSheet.create({
   topIconsWrap:{
     position: 'absolute',
     right: 0,
-    top: 12,
+    top: 50,
     display: 'flex',
     justifyContent: 'flex-end',
     flexDirection: 'row',
