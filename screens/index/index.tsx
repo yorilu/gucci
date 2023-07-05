@@ -16,9 +16,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
 import { useDispatch, useSelector } from 'react-redux';
+import Dialog from '../../components/Dialog';
 
 const TODAY = moment().format("YYYY_MM_DD");
-const redGif = require('../../assets/images/red.gif');
 const tagSelectedImg = require('../../assets/images/tag-selected.png');
 
 const WINDOW = Dimensions.get("window");
@@ -42,7 +42,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [showDialog, setShowDialog] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagSelectedIndex, setTagSelectedIndex] = useState(0);
-  const [dialogInfo, setDialogInfo] = useState({});
+  
 
   const [indexData, setIndexdata] = useState({
     firstBannerData: [],
@@ -118,24 +118,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       tags,
       goods
     })
-
-    let userId = userInfo?.id || await AsyncStorage.getItem("TEMP_USER_ID");
-    if(!userId){
-      userId = Math.floor(Math.random()*1000000);
-      AsyncStorage.setItem("TEMP_USER_ID", userId);
-    }
-
-    const advertInfo = await getModels('advert').send({
-      user_id: userId,
-      position: 2
-    },{
-      method: "GET"
-    })
-
-    if(advertInfo?.code ==0){
-      setDialogInfo(advertInfo.result);
-      setShowDialog(true);
-    }
 
     // try{
     //   const info = await $fetch(OSS_PATH + '/oss-config.json', null, {
@@ -221,16 +203,11 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   }
 
 
-  const onDialogClose = ()=>{
-    setShowDialog(false);
-  }
-
   const onTagClicked = (index)=>{
     setTagSelectedIndex(index);
   }
 
   const firstBannerCarouselHeight =  WINDOW.width / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
-  const dialogImgUrl = (DIALOG_PIC_PATH + dialogInfo.img) || '';
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -416,27 +393,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           }
         </View>
       </View>
-
-      {
-        showDialog && <View style={styles.redModal}>
-          <TouchableWithoutFeedback onPress={onDialogClose}>
-            <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>{
-            setShowDialog(false);
-            myGoWebView({
-              uri: dialogInfo.url
-            })
-          }}>
-            <Image
-              resizeMode={'cover'}
-              style={styles.redGif}
-              source={{uri:dialogImgUrl}}
-            />
-          </TouchableWithoutFeedback>
-
-        </View>
-      }
+      <Dialog position={1}></Dialog>
     </ScrollView>
   );
 }

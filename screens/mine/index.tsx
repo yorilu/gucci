@@ -18,6 +18,7 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {setToken, setUserInfo} from '../../actions';
 import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
+import Dialog from '../../components/Dialog';
 
 const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
@@ -132,187 +133,186 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
   const firstBannerCarouselHeight =  (WINDOW.width - 24) / FIRST_BANNER_SIZE.width * FIRST_BANNER_SIZE.height;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        {/* 顶部个人信息 */}
-        <View style={styles.topBgWrap}>
-          <Image source={mineBg} resizeMode="cover" resizeMethod="scale" style={styles.topBg}/>
-          
-          <View style={styles.topIconsWrap}>
-            <TouchableWithoutFeedback 
-                onPress={()=>{
-                  myGoWebView({
-                    uri: CUSTOMER_SERVICE
-                  })
-                }}
-              >
-              <Image source={kefuIcon} resizeMode="contain" resizeMethod="scale" style={{...styles.topIcon, ...styles.kefuIcon}}/>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback 
-                onPress={()=>{
-                  goAbout();
-                }}
-              >
-              <Image source={otherIcon} resizeMode="contain" resizeMethod="scale" style={styles.topIcon}/>
-            </TouchableWithoutFeedback>
-          </View>
-
-          <View style={styles.headerWrap}>
-            <Image source={!!userInfo && userInfo.avator || headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
-            <View style={styles.topLine}>
-              <TouchableWithoutFeedback 
-                onPress={()=>{
-                  if(userInfo) return;
-                  myGoWebView({
-                    isLogin: true,
-                    uri: LOGIN_PAGE
-                  })
-                }}
-              >
-                <Text style={styles.topLineTitle}>{!!userInfo && userInfo.mobile || '暂未登录'}</Text>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.topLine}>
-              { !!userInfo && <Text style={styles.topLineTitle}>{!!userInfo || '无优惠券'}</Text>}
-              <Text style={styles.topLineSubTitle}>优惠券<AntDesign name="right" size={12} color="#999" /></Text>
-            </View>
-          </View>
+    <View style={styles.container}>
+      {/* 顶部个人信息 */}
+      <View style={styles.topBgWrap}>
+        <Image source={mineBg} resizeMode="cover" resizeMethod="scale" style={styles.topBg}/>
+        
+        <View style={styles.topIconsWrap}>
+          <TouchableWithoutFeedback 
+              onPress={()=>{
+                myGoWebView({
+                  uri: CUSTOMER_SERVICE
+                })
+              }}
+            >
+            <Image source={kefuIcon} resizeMode="contain" resizeMethod="scale" style={{...styles.topIcon, ...styles.kefuIcon}}/>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback 
+              onPress={()=>{
+                goAbout();
+              }}
+            >
+            <Image source={otherIcon} resizeMode="contain" resizeMethod="scale" style={styles.topIcon}/>
+          </TouchableWithoutFeedback>
         </View>
 
-        <View style={styles.bodyWrap}>
-
-          {/* 订单收益 */}
-          <View style={styles.orderWrap}>
+        <View style={styles.headerWrap}>
+          <Image source={!!userInfo && userInfo.avator || headerIcon} resizeMode="contain" resizeMethod="scale" style={styles.avatar}/>
+          <View style={styles.topLine}>
             <TouchableWithoutFeedback 
               onPress={()=>{
+                if(userInfo) return;
                 myGoWebView({
-                  uri: FANLI_URL
+                  isLogin: true,
+                  uri: LOGIN_PAGE
                 })
               }}
             >
-              <View style={styles.orderItem}>
-                <Image source={mineOrderBg} resizeMode="cover" style={styles.orderItemBg}/>
-                <Text style={styles.orderItemText}>返利订单收益</Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback 
-              onPress={()=>{
-                myGoWebView({
-                  uri: OTHER_FANLI_URL
-                })
-              }}
-            >
-              <View style={styles.orderItem}>
-                <Image source={mineIncomeBg} resizeMode="cover" style={styles.orderItemBg}/>
-                <Text style={styles.orderItemText}>其他收益</Text>
-              </View>
+              <Text style={styles.topLineTitle}>{!!userInfo && userInfo.mobile || '暂未登录'}</Text>
             </TouchableWithoutFeedback>
           </View>
+          <View style={styles.topLine}>
+            { !!userInfo && <Text style={styles.topLineTitle}>{!!userInfo || '无优惠券'}</Text>}
+            <Text style={styles.topLineSubTitle}>优惠券<AntDesign name="right" size={12} color="#999" /></Text>
+          </View>
+        </View>
+      </View>
 
-          {/* Banner */}
-          { indexData.bannerData && !!indexData.bannerData.length && <Carousel 
-            style={{...styles.bannerCarousel, height: firstBannerCarouselHeight}} 
-            autoplay
-            infinite
-            dots={false}
-            autoplayInterval = { 5000 }
+      <View style={styles.bodyWrap}>
+
+        {/* 订单收益 */}
+        <View style={styles.orderWrap}>
+          <TouchableWithoutFeedback 
+            onPress={()=>{
+              myGoWebView({
+                uri: FANLI_URL
+              })
+            }}
           >
-            {
-              indexData.bannerData.map((item, index)=>{
-                const uri = getFile(item.img);
+            <View style={styles.orderItem}>
+              <Image source={mineOrderBg} resizeMode="cover" style={styles.orderItemBg}/>
+              <Text style={styles.orderItemText}>返利订单收益</Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback 
+            onPress={()=>{
+              myGoWebView({
+                uri: OTHER_FANLI_URL
+              })
+            }}
+          >
+            <View style={styles.orderItem}>
+              <Image source={mineIncomeBg} resizeMode="cover" style={styles.orderItemBg}/>
+              <Text style={styles.orderItemText}>其他收益</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+
+        {/* Banner */}
+        { indexData.bannerData && !!indexData.bannerData.length && <Carousel 
+          style={{...styles.bannerCarousel, height: firstBannerCarouselHeight}} 
+          autoplay
+          infinite
+          dots={false}
+          autoplayInterval = { 5000 }
+        >
+          {
+            indexData.bannerData.map((item, index)=>{
+              const uri = getFile(item.img);
+              return (
+                <TouchableWithoutFeedback 
+                  key={index}
+                  onPress={()=>{
+                    myGoWebView({
+                      uri: item.url
+                    })
+                  }}
+                >
+                  <Image
+                    style={styles.bannerImage}
+                    source={{uri}}
+                    resizeMode="contain"
+                  />
+                </TouchableWithoutFeedback>
+              )
+            })
+          }
+        </Carousel>}
+
+        {/* 金刚位1 */}
+        <View style={styles.operationContainer}>
+          <Text style={styles.operationWrapTitle}>我的订单</Text>
+          <View style={styles.operationWrap}>
+          {
+            indexData.myOrderData.map((item, index)=>{
+              const uri = getFile(item.img);
                 return (
-                  <TouchableWithoutFeedback 
-                    key={index}
-                    onPress={()=>{
-                      myGoWebView({
-                        uri: item.url
-                      })
-                    }}
-                  >
-                    <Image
-                      style={styles.bannerImage}
-                      source={{uri}}
-                      resizeMode="contain"
-                    />
-                  </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback 
+                      key={index}
+                      onPress={()=>{
+                        myGoWebView({
+                          uri: item.url
+                        })
+                      }}
+                    >
+                      <View style={styles.operationItem}>
+                        <Image
+                          style={styles.operationImage}
+                          source={{uri}}
+                        />
+                        <Text style={styles.operationTitle}>{item.title}</Text>
+                        <Text style={styles.operationSubTitle}>{item.subtitle}</Text>
+                      </View>
+                    </TouchableWithoutFeedback>
                 )
               })
             }
-          </Carousel>}
-
-          {/* 金刚位1 */}
-          <View style={styles.operationContainer}>
-            <Text style={styles.operationWrapTitle}>我的订单</Text>
-            <View style={styles.operationWrap}>
-            {
-              indexData.myOrderData.map((item, index)=>{
-                const uri = getFile(item.img);
-                  return (
-                      <TouchableWithoutFeedback 
-                        key={index}
-                        onPress={()=>{
-                          myGoWebView({
-                            uri: item.url
-                          })
-                        }}
-                      >
-                        <View style={styles.operationItem}>
-                          <Image
-                            style={styles.operationImage}
-                            source={{uri}}
-                          />
-                          <Text style={styles.operationTitle}>{item.title}</Text>
-                          <Text style={styles.operationSubTitle}>{item.subtitle}</Text>
-                        </View>
-                      </TouchableWithoutFeedback>
-                  )
-                })
-              }
-            </View>
           </View>
+        </View>
 
-          {/* 金刚位2 */}
-          <View style={styles.operationContainer}>
-            <View style={styles.operationWrap}>
-            {
-              indexData.myData.map((item, index)=>{
-                const uri = getFile(item.img);
-                  return (
-                      <TouchableWithoutFeedback 
-                        key={index}
-                        onPress={()=>{
-                          myGoWebView({
-                            uri: item.url
-                          })
-                        }}
-                      >
-                        <View style={styles.operationItem}>
-                          <Image
-                            style={styles.operationImage}
-                            source={{uri}}
-                          />
-                          <Text style={styles.operationTitle}>{item.title}</Text>
-                        </View>
-                      </TouchableWithoutFeedback>
-                  )
-                })
-              }
-            </View>
-          </View>
-          {/* 退出 */}
+        {/* 金刚位2 */}
+        <View style={styles.operationContainer}>
+          <View style={styles.operationWrap}>
           {
-            !!userInfo && <TouchableWithoutFeedback 
-              onPress={()=>{
-                quit();
-              }}
-            >
-              <View style={styles.quitWrap}>
-                <Text>退出</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          }
-        </View>    
-      </View> 
-    </ScrollView>
+            indexData.myData.map((item, index)=>{
+              const uri = getFile(item.img);
+                return (
+                    <TouchableWithoutFeedback 
+                      key={index}
+                      onPress={()=>{
+                        myGoWebView({
+                          uri: item.url
+                        })
+                      }}
+                    >
+                      <View style={styles.operationItem}>
+                        <Image
+                          style={styles.operationImage}
+                          source={{uri}}
+                        />
+                        <Text style={styles.operationTitle}>{item.title}</Text>
+                      </View>
+                    </TouchableWithoutFeedback>
+                )
+              })
+            }
+          </View>
+        </View>
+        {/* 退出 */}
+        {
+          !!userInfo && <TouchableWithoutFeedback 
+            onPress={()=>{
+              quit();
+            }}
+          >
+            <View style={styles.quitWrap}>
+              <Text>退出</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        }
+      </View>    
+      <Dialog position={2}></Dialog>
+    </View> 
   );
 }

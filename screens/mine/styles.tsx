@@ -5,6 +5,9 @@ const Styles = StyleSheet.create({
     paddingBottom: 30,
     backgroundColor: '#F8F9FB'
   },
+  scrollView: {
+    height: '100%'
+  },
   topBgWrap:{
     backgroundColor: '#FFF',
     position: 'relative'
