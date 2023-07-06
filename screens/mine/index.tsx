@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {setToken, setUserInfo} from '../../actions';
 import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 import Dialog from '../../components/Dialog';
+const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking')
 
 const mineBg = require('../../assets/images/mine/top-bg.png');
 const mineIncomeBg = require('../../assets/images/mine/mine-income-bg.png');
@@ -120,7 +121,12 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
           dispatch(setUserInfo({
             userInfo: null
           }))
-          navigation.navigate("Index")
+          navigation.navigate("Index");
+          try{
+            RCTNetworking.clearCookies(() => {});
+          }catch(e){
+            console.log(e);
+          }
         }
       },]
     )
@@ -312,7 +318,7 @@ export default function TabFourScreen({ navigation }: RootTabScreenProps<'TabOne
           </TouchableWithoutFeedback>
         }
       </View>    
-      <Dialog position={2}></Dialog>
+      <Dialog position={2}  navigation={navigation}></Dialog>
     </View> 
   );
 }

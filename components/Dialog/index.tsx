@@ -17,13 +17,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WebView } from 'react-native-webview';
 import { initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
+import Utils from '../../utils/index';
+
+const { getUrlWithHost , goWebView} = Utils;
 
 
 export default function Index(props) {
 
-  const {position = 1} = props;
+  const {position = 1, navigation} = props;
   const {DIALOG_PIC_PATH} = getEnv();
-  const { uri = '' , navigation =null , getHanler = ()=>{}, pageTitle, onNavigationStateChange, isLogin} = props;
   const {userInfo, mobile} = useSelector(state => state.app);
   const [dialogInfo, setDialogInfo] = useState({});
   const [showDialog, setShowDialog] = useState(false);
@@ -67,9 +69,10 @@ export default function Index(props) {
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={()=>{
         setShowDialog(false);
-        // myGoWebView({
-        //   uri: dialogInfo.url
-        // })
+        goWebView({
+          uri: dialogInfo.url,
+          navigation
+        })
       }}>
         <Image
           resizeMode={'cover'}

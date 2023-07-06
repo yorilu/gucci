@@ -397,7 +397,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
           }
         </View>
       </View>
-      <Dialog position={1}></Dialog>
+      <Dialog position={1} navigation ={navigation}></Dialog>
     </ScrollView>
   );
 }

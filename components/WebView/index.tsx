@@ -143,13 +143,14 @@ export default function Index(props) {
   //插入token.
   const injectedJavaScriptBeforeContentLoaded = `(function() {
       localStorage.setItem("CUSTOMER_ID","${customerId}");
+      //判断有没有登录，如果没有则必须清空localStorage.去掉登录态.
+      ${!userInfo && "localStorage.clear();"}
     })();
   `
   const onload = ()=>{
     const injectJavascriptStr =  `(function() {
         //增加列熊customer_id
         localStorage.setItem("CUSTOMER_ID","${customerId}");
-        
         //获取title, 通知webview
         try{
           //晚几秒，有个单页应用
