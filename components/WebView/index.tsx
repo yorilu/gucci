@@ -91,7 +91,7 @@ export default function Index(props) {
     let loginPage = LOGIN_PAGE.replace("{customerId}", customerId);
     let needLogin = isLogin;
 
-    //如果连接中含有{mobile}，并且没登录，则去登录
+    //如果连接中含有{mobile}并且没登录，则去登录
     if(!userInfo && url.includes('{phone}')){
       needLogin = true;
     }
@@ -105,10 +105,6 @@ export default function Index(props) {
     }else if(isBYNUrl){
       setMyWebviewUri(loginPage);
     }else{
-      //如果没有登录，则一定是需要先登录.
-      if(!userInfo){
-        url += "&&cleanCache=1"
-      }
       setMyWebviewUri(url);
     }
 
