@@ -12,9 +12,13 @@ import Utils from '../../utils/index';
 import { useFocusEffect } from '@react-navigation/native';
 import $fetch from '../../utils/fetch';
 import md5 from 'js-md5';
+import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
+const redGif = require('../../assets/images/red.gif');
 
 const WINDOW = Dimensions.get("window");
 const { getUrlWithHost , goWebView} = Utils;
+
+const RED_BAG_URL = 'ecard/pages/mineequitycard/index'
 
 const BANNER_SIZE = {
   width: 686,
@@ -31,9 +35,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [secondBannerData, setSecondBannerData] = useState([]);
   const [operationData, setOperationData] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
-
-
-
+  const [showRedBag, setShowRedBag] = useState(false);
+  const [redBagUrl, setRedBagUrl] = useState('');
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log("======focus======")
@@ -67,6 +71,17 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     setOperationData(formatData || []);
     setSecondBannerData(data3.records || []);
     setHotGoods(data4.records || []);
+  }
+
+  const onRedBagClicked = ()=>{
+    setShowRedBag(false);
+    myGoWebView({
+      uri: redBagUrl
+    })
+  }
+
+  const onRedBagClose = ()=>{
+    setShowRedBag(false);
   }
 
   const onSearchClicked = ({} = {})=>{
@@ -133,167 +148,189 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const bannerCarouselHeight =  WINDOW.width / BANNER_SIZE.width * BANNER_SIZE.height;
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.containerWrap}>
-          {/* 搜索框 */}
-          <View style={styles.searchWrap}>
-            <Image
-              style={styles.searchIcon}
-              source={{
-                uri: Icons.searchIcon
-              }}
-            />
-            <TouchableWithoutFeedback onPress={onSearchClicked}>
-              <Text style={styles.searchText}>输入关键词进行搜索</Text>
+    <View>
+      {
+          showRedBag && <View style={styles.redModal}>
+            <TouchableWithoutFeedback onPress={onRedBagClose}>
+              <FontAwesome style={styles.redGifClose} name="close" size={24} color="black" />
             </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={onRedBagClicked}>
+              <Image
+                resizeMode={'cover'}
+                style={styles.redGif}
+                source={redGif}
+              />
+            </TouchableWithoutFeedback>
+
+          </View>
+        }
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.containerWrap}>
+            {/* 搜索框 */}
+            <View style={styles.searchWrap}>
+              <Image
+                style={styles.searchIcon}
+                source={{
+                  uri: Icons.searchIcon
+                }}
+              />
+              <TouchableWithoutFeedback onPress={onSearchClicked}>
+                <Text style={styles.searchText}>输入关键词进行搜索</Text>
+              </TouchableWithoutFeedback>
+            </View>
+
+            {/* Banner */}
+            { firstBannerData && !!firstBannerData.length && <Carousel 
+              style={{...styles.bannerCarousel, height: bannerCarouselHeight}} 
+              autoplay
+              infinite
+              dots={false}
+              autoplayInterval = { 5000 }
+            >
+              {
+                firstBannerData.map((item, index)=>{
+                  const uri = getFile(item.images);
+                  return (
+                    <TouchableWithoutFeedback 
+                      key={index}
+                      onPress={()=>{
+                        myGoWebView({
+                          uri: item.skipUrl
+                        })
+                      }}
+                    >
+                      <Image
+                        style={styles.bannerImage}
+                        source={{uri}}
+                      />
+                    </TouchableWithoutFeedback>
+                  )
+                })
+              }
+            </Carousel>
+            }
+
+            {/* 导航-金刚位 */}
+            {operationData && !!operationData.length && <Carousel 
+              dots={false}
+              style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*140}} 
+            >
+              {
+              operationData.map((items, index)=>{
+                  return (
+                    <View key={index} style={styles.operationWrap}>
+                      {
+                        items.map((item, itemIndex)=>{
+                          const uri = getFile(item.images);
+                          return (
+                            <TouchableWithoutFeedback 
+                              key={itemIndex}
+                              onPress={()=>{
+                                myGoWebView({
+                                  uri: item.skipUrl
+                                })
+                              }}
+                            >
+                              <View style={styles.operationItem}>
+                                <Image
+                                  style={styles.operationImage}
+                                  source={{uri}}
+                                />
+                                <Text>{item.name}</Text>
+                              </View>
+                            </TouchableWithoutFeedback>
+                          )
+                        })
+                      }
+                    </View>
+                  )
+                })
+              }
+            </Carousel>
+            }
+
+            {/* Banner */}
+            { secondBannerData && !!secondBannerData.length && <Carousel 
+              style={styles.secondBannerCarousel} 
+              autoplay
+              infinite
+              dots={false}
+              autoplayInterval = { 5000 }
+            >
+              {
+                secondBannerData.map((item, index)=>{
+                  const uri = getFile(item.images);
+                  return (
+                    <TouchableWithoutFeedback 
+                      key={index}
+                      onPress={()=>{
+                        if(item.skipUrl.includes(RED_BAG_URL)){
+                          //如果是红包连接则先弹窗
+                          setRedBagUrl(item.skipUrl);
+                          setShowRedBag(true);
+                        }else{
+                          myGoWebView({
+                            uri: item.skipUrl
+                          })
+                        }
+                      }}
+                    >
+                      <Image
+                        style={styles.secondBannerImage}
+                        source={{uri}}
+                      />
+                    </TouchableWithoutFeedback>
+                  )
+                })
+              }
+            </Carousel>
+            }
           </View>
 
-          {/* Banner */}
-          { firstBannerData && !!firstBannerData.length && <Carousel 
-            style={{...styles.bannerCarousel, height: bannerCarouselHeight}} 
-            autoplay
-            infinite
-            dots={false}
-            autoplayInterval = { 5000 }
-          >
+          <View style={styles.blockTitle}>
+            <Text style={styles.blockTitleText}>今日特卖</Text>
+          </View>
+
+          <View style={styles.hotGoods}>
             {
-              firstBannerData.map((item, index)=>{
-                const uri = getFile(item.images);
+              hotGoods.map((item, index)=>{
+                const uri = getFile(item.goodsImageUrls?.[0] || '');
+                const sku = item.skuList[0];
+                let {marketPrice, sellPrice} = sku;
+                marketPrice = marketPrice / 100;
+                sellPrice = sellPrice / 100;
                 return (
                   <TouchableWithoutFeedback 
                     key={index}
                     onPress={()=>{
+                      const uri = getUrlWithHost(`mall/pages/detail/index?id=${item.id}`)
                       myGoWebView({
-                        uri: item.skipUrl
+                        uri
                       })
                     }}
                   >
-                    <Image
-                      style={styles.bannerImage}
-                      source={{uri}}
-                    />
-                  </TouchableWithoutFeedback>
-                )
-              })
-            }
-          </Carousel>
-          }
-
-          {/* 导航-金刚位 */}
-          {operationData && !!operationData.length && <Carousel 
-            dots={false}
-            style={{...styles.operationCarousel, height: Math.ceil(operationData.length / 5)*140}} 
-          >
-            {
-            operationData.map((items, index)=>{
-                return (
-                  <View key={index} style={styles.operationWrap}>
-                    {
-                      items.map((item, itemIndex)=>{
-                        const uri = getFile(item.images);
-                        return (
-                          <TouchableWithoutFeedback 
-                            key={itemIndex}
-                            onPress={()=>{
-                              myGoWebView({
-                                uri: item.skipUrl
-                              })
-                            }}
-                          >
-                            <View style={styles.operationItem}>
-                              <Image
-                                style={styles.operationImage}
-                                source={{uri}}
-                              />
-                              <Text>{item.name}</Text>
-                            </View>
-                          </TouchableWithoutFeedback>
-                        )
-                      })
-                    }
-                  </View>
-                )
-              })
-            }
-          </Carousel>
-          }
-
-          {/* Banner */}
-          { secondBannerData && !!secondBannerData.length && <Carousel 
-            style={styles.secondBannerCarousel} 
-            autoplay
-            infinite
-            dots={false}
-            autoplayInterval = { 5000 }
-          >
-            {
-              secondBannerData.map((item, index)=>{
-                const uri = getFile(item.images);
-                return (
-                  <TouchableWithoutFeedback 
-                    key={index}
-                    onPress={()=>{
-                      myGoWebView({
-                        uri: item.skipUrl
-                      })
-                    }}
-                  >
-                    <Image
-                      style={styles.secondBannerImage}
-                      source={{uri}}
-                    />
-                  </TouchableWithoutFeedback>
-                )
-              })
-            }
-          </Carousel>
-          }
-        </View>
-
-        <View style={styles.blockTitle}>
-          <Text style={styles.blockTitleText}>今日特卖</Text>
-        </View>
-
-        <View style={styles.hotGoods}>
-          {
-            hotGoods.map((item, index)=>{
-              const uri = getFile(item.goodsImageUrls?.[0] || '');
-              const sku = item.skuList[0];
-              let {marketPrice, sellPrice} = sku;
-              marketPrice = marketPrice / 100;
-              sellPrice = sellPrice / 100;
-              return (
-                <TouchableWithoutFeedback 
-                  key={index}
-                  onPress={()=>{
-                    const uri = getUrlWithHost(`mall/pages/detail/index?id=${item.id}`)
-                    myGoWebView({
-                      uri
-                    })
-                  }}
-                >
-                  <View style={styles.hotItem}>
-                    <Image
-                      style={styles.hotItemImg}
-                      source={{uri}}
-                    />
-                    <View style={styles.hotItemWrap}>
-                      <Text style={styles.hotItemName}>{item.goodsName}</Text>
-                      <View style={styles.hotItemMoneyWrap}>
-                        <Text style={styles.hotItemUnit}>￥</Text>
-                        <Text style={styles.hotItemMoney}>{sellPrice}</Text>
-                        <Text style={styles.hotItemMarketMoney}>￥{marketPrice}</Text>
+                    <View style={styles.hotItem}>
+                      <Image
+                        style={styles.hotItemImg}
+                        source={{uri}}
+                      />
+                      <View style={styles.hotItemWrap}>
+                        <Text style={styles.hotItemName}>{item.goodsName}</Text>
+                        <View style={styles.hotItemMoneyWrap}>
+                          <Text style={styles.hotItemUnit}>￥</Text>
+                          <Text style={styles.hotItemMoney}>{sellPrice}</Text>
+                          <Text style={styles.hotItemMarketMoney}>￥{marketPrice}</Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              )
-            })
-          }
+                  </TouchableWithoutFeedback>
+                )
+              })
+            }
+          </View>
         </View>
-
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
