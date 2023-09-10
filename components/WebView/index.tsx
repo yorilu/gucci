@@ -324,7 +324,7 @@ export default function Index(props) {
             isFirstLoadBynUrlFlag = true;
 
             setMyWebviewUri(bynUri);
-          }else{
+          }else if(uri){
             let myUri = getReplacedUrl(uri, userInfoData);
             setMyWebviewUri(myUri);
           }
@@ -374,7 +374,7 @@ export default function Index(props) {
         originWhitelist = {["*"]}
         allowFileAccessFromFileURLs={true}
         allowUniversalAccessFromFileURLs={true}
-        applicationNameForUserAgent={'GucciApp/1.0.0'}
+        applicationNameForUserAgent={'GucciApp/2.0.0'}
         onNavigationStateChange={(navState)=>{
           webViewHasHistory = navState.canGoBack;
           onNavigationStateChange && onNavigationStateChange();
